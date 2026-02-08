@@ -2,7 +2,9 @@
    "compilerOptions": {
       "paths": {
          "@core": ["layers/core"],
-         "@core/*": ["layers/core/*"]
+         "@core/*": ["layers/core/*"],
+         "@domains": ["layers/domains"],
+         "@domains/*": ["layers/domains/*"]
       }
    }
 }
