@@ -1,0 +1,17 @@
+{
+  "name": "@core/ui",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "postinstall": "nuxt prepare",
+    "clean": "pnpm dlx rimraf .nuxt node_modules"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^4.4.0",
+    "@types/node": "catalog:",
+    "nuxt": "catalog:core",
+    "tailwindcss": "^4.1.18",
+    "vue": "catalog:core",
+    "vue-router": "catalog:core"
+  }
+}

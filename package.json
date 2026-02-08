@@ -1,0 +1,28 @@
+{
+  "name": "almshop",
+  "version": "0.0.0",
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2"
+  },
+  "scripts": {
+    "build": "pnpm run --filter app build",
+    "dev": "pnpm run --filter app dev",
+    "format": "prettier --write .",
+    "clean:all": "pnpm run -r clean && pnpm dlx rimraf node_modules"
+  },
+  "type": "module",
+  "workspaces": {
+    "packages": [
+      "app",
+      "layers/**"
+    ],
+    "catalogs": {
+      "core": {
+        "nuxt": "^4.3.1",
+        "vue": "^3.5.27",
+        "vue-router": "^4.6.4"
+      }
+    }
+  }
+}
