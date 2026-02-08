@@ -28,7 +28,7 @@ async function main() {
    const targetBase = type === "core" ? "layers/core" : "layers/domains"
    const targetDir = join(rootDir, targetBase, name)
 
-   consola.info(`\nCreating ${type} layer '${name}' at ${targetDir}...`)
+   consola.info(`Creating ${type} layer '${name}' at ${targetDir}...`)
 
    try {
       await fs.access(targetDir)
@@ -115,7 +115,7 @@ async function main() {
             // Insert extends if missing
             newContent = content.replace(
                /(defineNuxtConfig\(\s*\{)/,
-               `$1\n  extends: ["${layerPath}"],`
+               `$1  extends: ["${layerPath}"],`
             )
          }
 
@@ -151,13 +151,13 @@ async function main() {
    }
 
    // Run pnpm install
-   consola.info("\nRunning 'pnpm install' to link dependencies...")
+   consola.info("Running 'pnpm install' to link dependencies...")
    const { execSync } = await import("node:child_process")
    try {
       execSync("pnpm install", { stdio: "inherit", cwd: rootDir })
-      consola.success("\nDependencies installed successfully.")
+      consola.success("Dependencies installed successfully.")
    } catch (error) {
-      consola.error("\nFailed to run 'pnpm install'. Please run it manually.")
+      consola.error("Failed to run 'pnpm install'. Please run it manually.")
    }
 }
 

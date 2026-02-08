@@ -2,5 +2,5 @@
 export default defineNuxtConfig({
    compatibilityDate: "2025-07-15",
    devtools: { enabled: true },
-   extends: ["../../core/ui", "../../core/server"],
+   extends: ["../ui"],
 })
