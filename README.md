@@ -1,4 +1,4 @@
-# Project Context: Almshop Frontend
+# Almshop Frontend
 
 ## Overview
 
@@ -10,7 +10,7 @@ The project is structured as a monorepo using pnpm workspaces:
 
 - **`app/`**: The main Nuxt application entry point. This package consumes the functionality provided by the layers.
 - **`layers/`**: Modular layers that isolate features and shared logic.
-   - **`core/ui`**: Contains shared UI components, styles, and configuration (likely Tailwind CSS).
+   - **`core/ui`**: Contains shared UI components, styles, and configuration.
    - **`domains/auth`**: Encapsulates authentication-related logic, pages, and components.
 
 ## Key Technologies
@@ -76,30 +76,13 @@ pnpm clean:all
 - `app/`: Main application source.
 - `layers/`: Shared feature and UI layers.
 
-## General Instruction
-
-- Before you trying to update or modify a task, always make sure to read it first and understand any logic and/or patterns used in the code.
-- When you generate new code, always follow the existing code style and patterns used in the project.
-- When you generate new code, always make a proper documentation for the code.
-- When you generate new code, always make a proper error handling.
-- **Confirm Dangerous Commands**: If the intended command is potentially destructive (e.g., rm, mv, sudo, systemctl), you **must** explicitly preface the command proposal with a warning: 'WARNING: POTENTIALLY DESTRUCTIVE ACTION REQUIRED'.
-- **Do not** create a git commit and/or push to remote repository unless explicitly asked to do so.
-- **Do not** build the application unless explicitly asked to do so.
-
 ## Code Conventions
 
-- Use Nuxt UI as primary UI component library.
-- Always use TypeScript unless explicitly to use another language.
-- Always use PascalCase for component names.
-- Always use kebab-case for component's prop and emit names.
-- Always use camelCase for variables, methods, utils and composables names.
-- Always use kebab-case for file names and directories.
-- Prefer nullish coalescing operator (`??`) over logical OR (`||`) for default values.
 - **Utils naming**: Utility functions are prefixed with `$` (e.g., `$formatCurrency`) and are auto-imported.
 - **Composables naming**: Composables are prefixed with `use` (e.g., `useAuth`) and are auto-imported.
 - **Layer Extension Rules**:
     - `./app` is only allowed to extend Nuxt apps located in `./layers/domains`.
-    - `./layers/core`apps are only allowed to be extended by `./layers/domains` apps.
+    - `./layers/core` is only allowed to be extended by `./layers/domains`.
 - **Formatting**: Always format code using Prettier (`pnpm format`) after completing changes.
 
 ## llms.txt
