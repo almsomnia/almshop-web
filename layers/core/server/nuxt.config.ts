@@ -2,5 +2,7 @@
 export default defineNuxtConfig({
    compatibilityDate: "2025-07-15",
    devtools: { enabled: true },
-   extends: ["../ui"],
+   runtimeConfig: {
+      apiUrl: import.meta.env.API_URL
+   }
 })
