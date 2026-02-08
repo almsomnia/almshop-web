@@ -1,6 +1,7 @@
 packages:
    - app
    - layers/**
+   - utils/**
 
 catalog:
    "@types/node": ^24.1.0

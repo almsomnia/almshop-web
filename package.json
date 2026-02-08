@@ -9,7 +9,8 @@
     "build": "pnpm run --filter app build",
     "dev": "pnpm run --filter app dev",
     "format": "prettier --write .",
-    "clean:all": "pnpm run -r clean && pnpm dlx rimraf node_modules"
+    "clean:all": "pnpm run -r clean && pnpm dlx rimraf node_modules",
+    "gen:layer": "pnpm run --filter @utils/layer-generator start"
   },
   "type": "module",
   "workspaces": {

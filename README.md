@@ -12,6 +12,8 @@ The project is structured as a monorepo using pnpm workspaces:
 - **`layers/`**: Modular layers that isolate features and shared logic.
    - **`core/ui`**: Contains shared UI components, styles, and configuration.
    - **`domains/auth`**: Encapsulates authentication-related logic, pages, and components.
+- **`utils/`**: Internal utilities for development.
+   - **`layer-generator`**: A CLI tool to scaffold new core or domain layers.
 
 ## Key Technologies
 
@@ -53,6 +55,14 @@ To build the application:
 pnpm build
 ```
 
+### Layer Generation
+
+To scaffold a new layer (core or domain):
+
+```bash
+pnpm gen:layer
+```
+
 ### Code Quality
 
 Format code using Prettier:
@@ -75,6 +85,7 @@ pnpm clean:all
 - `pnpm-workspace.yaml`: Defines workspace packages and catalogs.
 - `app/`: Main application source.
 - `layers/`: Shared feature and UI layers.
+- `utils/`: Development utility packages.
 
 ## Code Conventions
 
