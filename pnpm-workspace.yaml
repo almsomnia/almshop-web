@@ -1,14 +1,14 @@
 packages:
-  - app
-  - layers/**
+   - app
+   - layers/**
 
 catalog:
-  '@types/node': ^24.1.0
+   "@types/node": ^24.1.0
 
 catalogs:
-  core:
-    nuxt: ^4.3.1
-    vue: ^3.5.27
-    vue-router: ^4.6.4
+   core:
+      nuxt: ^4.3.1
+      vue: ^3.5.27
+      vue-router: ^4.6.4
 
 nodeLinker: hoisted
