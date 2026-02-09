@@ -7,8 +7,16 @@
     "clean": "pnpm dlx rimraf .nuxt node_modules"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.11.3",
     "nuxt": "catalog:core",
+    "pinia": "^3.0.4",
+    "universal-cookie": "^7.2.2",
     "vue": "catalog:core",
     "vue-router": "catalog:core"
+  },
+  "devDependencies": {
+    "@vueuse/core": "^14.2.0",
+    "@vueuse/nuxt": "^14.2.0",
+    "dayjs-nuxt": "^2.1.11"
   }
 }
