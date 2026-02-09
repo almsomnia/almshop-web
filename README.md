@@ -93,15 +93,15 @@ pnpm clean:all
 - **Utils naming**: Utility functions are prefixed with `$` (e.g., `$formatCurrency`) and are auto-imported.
 - **Composables naming**: Composables are prefixed with `use` (e.g., `useAuth`) and are auto-imported.
 - **Layer Extension Rules**:
-    - `./app` is only allowed to extend Nuxt apps located in `./layers/domains`.
-    - `./layers/domains` are allowed to extend Nuxt apps located in `./layers/core`.
-    - `./layers/core` are allowed to extend Nuxt apps located in `./layers/base`.
-    - `./layers/base` is not allowed to extend any layers.
+   - `./app` is only allowed to extend Nuxt apps located in `./layers/domains`.
+   - `./layers/domains` are allowed to extend Nuxt apps located in `./layers/core`.
+   - `./layers/core` are allowed to extend Nuxt apps located in `./layers/base`.
+   - `./layers/base` is not allowed to extend any layers.
 - **Formatting**: Always format code using Prettier (`pnpm format`) after completing changes.
 - **Centralized Types**:
-    - Global types are defined in `types/` directory (e.g., `API`, `DTO` namespaces).
-    - These types are integrated into each Nuxt application via `nuxt.config.ts` by adding the appropriate relative path to the `include` array of the TypeScript configuration.
-    - They are globally available and do not require explicit imports.
+   - Global types are defined in `types/` directory (e.g., `API`, `DTO` namespaces).
+   - These types are integrated into each Nuxt application via `nuxt.config.ts` by adding the appropriate relative path to the `include` array of the TypeScript configuration.
+   - They are globally available and do not require explicit imports.
 
 ## llms.txt
 

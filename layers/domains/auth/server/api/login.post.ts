@@ -4,6 +4,6 @@ export default eventHandler(async (event) => {
 
    return await $api<API.Response<DTO.Auth>>(`/auth/login`, {
       method: "post",
-      body
+      body,
    })
 })

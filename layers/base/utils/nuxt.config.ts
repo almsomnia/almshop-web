@@ -4,14 +4,11 @@ const typeDeclarationTsConfig = {
 }
 
 export default defineNuxtConfig({
-   extends: ["../../base/utils"],
    compatibilityDate: "2025-07-15",
    devtools: { enabled: true },
-   runtimeConfig: {
-      apiUrl: import.meta.env.API_URL,
-   },
+   extends: [],
 
-   // all paths are relative from ./server
+   // all paths are relative from ./.nuxt
    typescript: {
       tsConfig: { ...typeDeclarationTsConfig },
       sharedTsConfig: { ...typeDeclarationTsConfig },

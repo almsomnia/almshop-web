@@ -2,7 +2,7 @@
    "compilerOptions": {
       "rootDir": ".",
       "declaration": true,
-      "emitDeclarationOnly": true,
+      "emitDeclarationOnly": true
    },
    "include": ["**/*.d.ts"]
 }
