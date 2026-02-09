@@ -11,6 +11,15 @@ export default defineAppConfig({
       },
       main: {
          base: "p-4 sm:px-6 lg:px-8"
+      },
+      modal: {
+         variants: {
+            fullscreen: {
+               false: {
+                  content: "max-w-lg"
+               }
+            }
+         }
       }
    }
 })
