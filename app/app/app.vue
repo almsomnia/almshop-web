@@ -1,7 +1,10 @@
 <template>
    <div>
       <NuxtRouteAnnouncer />
-      <!-- <NuxtWelcome /> -->
-      <div class="bg-red-500">lorem</div>
+      <UApp>
+         <NuxtLayout>
+            <NuxtPage />
+         </NuxtLayout>
+      </UApp>
    </div>
 </template>
