@@ -48,9 +48,19 @@ async function main() {
 
    // Data for templates
    const pkgName = type === "core" ? `@core/${name}` : `@domain/${name}`
-   let extendsPath = "../../core/ui"
-   if (type === "core") {
-      extendsPath = "../ui"
+   let extendsPath = ""
+   if (type === "domain") {
+      const coreDir = join(rootDir, "layers/core")
+      try {
+         const entries = await fs.readdir(coreDir, { withFileTypes: true })
+         extendsPath = entries
+            .filter((e) => e.isDirectory())
+            .map((e) => `../../core/${e.name}`)
+            .map((p) => `"${p}"`)
+            .join(", ")
+      } catch (e) {
+         consola.warn("Could not read layers/core directory")
+      }
    }
 
    const templateData = {
