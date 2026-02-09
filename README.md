@@ -85,6 +85,7 @@ pnpm clean:all
 - `pnpm-workspace.yaml`: Defines workspace packages and catalogs.
 - `app/`: Main application source.
 - `layers/`: Shared feature and UI layers.
+- `types/`: Centralized global TypeScript type definitions.
 - `utils/`: Development utility packages.
 
 ## Code Conventions
@@ -95,6 +96,10 @@ pnpm clean:all
     - `./app` is only allowed to extend Nuxt apps located in `./layers/domains`.
     - `./layers/core` is only allowed to be extended by `./layers/domains`.
 - **Formatting**: Always format code using Prettier (`pnpm format`) after completing changes.
+- **Centralized Types**:
+    - Global types are defined in `types/` directory (e.g., `API`, `DTO` namespaces).
+    - These types are integrated into each Nuxt application via `nuxt.config.ts` by adding the appropriate relative path to the `include` array of the TypeScript configuration.
+    - They are globally available and do not require explicit imports.
 
 ## llms.txt
 
