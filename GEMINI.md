@@ -111,7 +111,9 @@ pnpm clean:all
 - **Composables naming**: Composables are prefixed with `use` (e.g., `useAuth`) and are auto-imported.
 - **Layer Extension Rules**:
     - `./app` is only allowed to extend Nuxt apps located in `./layers/domains`.
-    - `./layers/core`apps are only allowed to be extended by `./layers/domains` apps.
+    - `./layers/domains` are allowed to extend Nuxt apps located in `./layers/core`.
+    - `./layers/core` are allowed to extend Nuxt apps located in `./layers/base`.
+    - `./layers/base` is not allowed to extend any layers.
 - **Formatting**: Always format code using Prettier (`pnpm format`) after completing changes.
 - **Centralized Types**:
     - Global types are defined in `types/` directory (e.g., `API`, `DTO` namespaces).

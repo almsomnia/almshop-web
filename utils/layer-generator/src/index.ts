@@ -7,7 +7,7 @@ import Handlebars from "handlebars"
 async function main() {
    const type = await consola.prompt("Select layer type:", {
       type: "select",
-      options: ["core", "domain"],
+      options: ["base", "core", "domain"],
    })
 
    const name = await consola.prompt("Enter layer name:", {
@@ -25,7 +25,12 @@ async function main() {
    const rootDir = resolve(currentDir, "../../..")
    const templatesDir = resolve(currentDir, "../templates")
 
-   const targetBase = type === "core" ? "layers/core" : "layers/domains"
+   const targetBaseMap: Record<string, string> = {
+      base: "layers/base",
+      core: "layers/core",
+      domain: "layers/domains",
+   }
+   const targetBase = targetBaseMap[type as string]
    const targetDir = join(rootDir, targetBase, name)
 
    consola.info(`Creating ${type} layer '${name}' at ${targetDir}...`)
@@ -47,9 +52,26 @@ async function main() {
    await fs.mkdir(targetDir, { recursive: true })
 
    // Data for templates
-   const pkgName = type === "core" ? `@core/${name}` : `@domain/${name}`
+   const pkgName = {
+      base: `@base/${name}`,
+      core: `@core/${name}`,
+      domain: `@domain/${name}`,
+   }[type as string]
+
    let extendsPath = ""
-   if (type === "domain") {
+   if (type === "core") {
+      const baseDir = join(rootDir, "layers/base")
+      try {
+         const entries = await fs.readdir(baseDir, { withFileTypes: true })
+         extendsPath = entries
+            .filter((e) => e.isDirectory())
+            .map((e) => `../../base/${e.name}`)
+            .map((p) => `"${p}"`)
+            .join(", ")
+      } catch (e) {
+         // Ignore if base dir doesn't exist
+      }
+   } else if (type === "domain") {
       const coreDir = join(rootDir, "layers/core")
       try {
          const entries = await fs.readdir(coreDir, { withFileTypes: true })
@@ -158,6 +180,22 @@ async function main() {
       } catch (e) {
          // Ignore if domains dir doesn't exist
       }
+   } else if (type === "base") {
+      // Extend in all core layers
+      const coreDir = join(rootDir, "layers/core")
+      try {
+         const cores = await fs.readdir(coreDir, { withFileTypes: true })
+         for (const dirent of cores) {
+            if (dirent.isDirectory()) {
+               await updateNuxtConfig(
+                  join(coreDir, dirent.name, "nuxt.config.ts"),
+                  `../../base/${name}`
+               )
+            }
+         }
+      } catch (e) {
+         // Ignore if core dir doesn't exist
+      }
    }
 
    // Run pnpm install
@@ -166,6 +204,13 @@ async function main() {
    try {
       execSync("pnpm install", { stdio: "inherit", cwd: rootDir })
       consola.success("Dependencies installed successfully.")
+      const formatCode = await consola.prompt("Format code?", {
+         type: "confirm",
+      })
+      if (formatCode) {
+         execSync("pnpm format", { stdio: "inherit", cwd: rootDir })
+         consola.success("Code formatted successfully.")
+      }
    } catch (error) {
       consola.error("Failed to run 'pnpm install'. Please run it manually.")
    }
