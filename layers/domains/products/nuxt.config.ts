@@ -11,12 +11,12 @@ const typeDeclarationTsConfig = {
 export default defineNuxtConfig({
    compatibilityDate: "2025-07-15",
    devtools: { enabled: true },
-   extends: ["../../core/ui", "../../core/server"],
+   extends: ["../../core/server", "../../core/ui"],
 
    components: {
       dirs: [
          {
-            path: join(currentDir, "app/components"),
+            path: join(currentDir, "components"),
             pathPrefix: false,
          },
       ],
@@ -29,8 +29,6 @@ export default defineNuxtConfig({
       nodeTsConfig: { ...typeDeclarationTsConfig },
    },
    nitro: {
-      typescript: {
-         tsConfig: { ...typeDeclarationTsConfig },
-      },
+      typescript: { tsConfig: { ...typeDeclarationTsConfig } },
    },
 })

@@ -6,7 +6,19 @@ type Dialog = {
    show: boolean
    title: string
    component: ReturnType<typeof h>
-   width: "auto" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"
+   width:
+      | "auto"
+      | "xs"
+      | "sm"
+      | "md"
+      | "lg"
+      | "xl"
+      | "2xl"
+      | "3xl"
+      | "4xl"
+      | "5xl"
+      | "6xl"
+      | "7xl"
 }
 
 export const useAppStore = defineStore("almshop-app-store", () => {
@@ -14,7 +26,7 @@ export const useAppStore = defineStore("almshop-app-store", () => {
       show: false,
       title: "",
       component: markRaw(h("div")),
-      width: "lg"
+      width: "lg",
    })
 
    function showDialog(
@@ -46,6 +58,6 @@ export const useAppStore = defineStore("almshop-app-store", () => {
       dialog: skipHydrate(dialog),
       showDialog,
       closeDialog,
-      notify
+      notify,
    }
 })

@@ -1,5 +1,5 @@
 export default defineAppConfig({
    app: {
-      title: "Almshop"
-   }
+      title: "Almshop",
+   },
 })

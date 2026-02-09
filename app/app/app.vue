@@ -14,7 +14,7 @@ const { dialog } = useAppStore()
                v-model:open="dialog.show"
                :title="dialog.title"
                :ui="{
-                  content: `max-w-${dialog.width}`
+                  content: `max-w-${dialog.width}`,
                }"
             >
                <template #body>
