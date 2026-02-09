@@ -12,7 +12,8 @@
     "pinia": "^3.0.4",
     "universal-cookie": "^7.2.2",
     "vue": "catalog:core",
-    "vue-router": "catalog:core"
+    "vue-router": "catalog:core",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@vueuse/core": "^14.2.0",

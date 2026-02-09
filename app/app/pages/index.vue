@@ -1,18 +1,5 @@
-<script setup lang="ts">
-const appStore = useAppStore()
-
-function onOpenDialog() {
-   appStore.showDialog('Dialog Title', h('div', 'Dialog Content'))
-}
-</script>
+<script setup lang="ts"></script>
 
 <template>
-   <UButton
-      label="Show Dialog"
-      @click="onOpenDialog"
-   />
-   <UButton
-      label="Show Notification"
-      @click="appStore.notify({ title: 'Notification Title', description: 'Notification Description' })"
-   />
+   Hello world
 </template>
