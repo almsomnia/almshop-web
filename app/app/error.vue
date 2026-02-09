@@ -1,0 +1,16 @@
+<script setup lang="ts">
+import type { NuxtError } from "#app"
+
+const props = defineProps<{
+   error: NuxtError
+}>()
+</script>
+
+<template>
+   <UError
+      :error="error"
+      :clear="{
+         icon: 'lucide:arrow-left'
+      }"
+   />
+</template>

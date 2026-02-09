@@ -22,6 +22,12 @@ export default defineNuxtConfig({
       ],
    },
 
+   imports: {
+      dirs: [
+         join(currentDir, "app/stores/**"),
+      ]
+   },
+
    // all paths are relative from ./.nuxt
    typescript: {
       tsConfig: { ...typeDeclarationTsConfig },

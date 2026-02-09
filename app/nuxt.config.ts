@@ -8,6 +8,10 @@ export default defineNuxtConfig({
    devtools: { enabled: true },
    extends: ["../layers/domains/auth", "../layers/domains/products"],
 
+   routeRules: {
+      '/admin': { appLayout: "admin" }
+   },
+
    // all paths are relative from ./nuxt
    typescript: {
       tsConfig: { ...typeDeclarationTsConfig },

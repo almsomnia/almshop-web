@@ -11,5 +11,14 @@ export default function (event: H3Event) {
             options.headers.set("Authorization", `Bearer ${token}`)
          }
       },
+      onResponseError: ({ error, response }) => {
+         const data: API.Response<any> = response._data
+         throw createError({
+            status: response.status,
+            statusText: response.statusText,
+            message: data.meta.error,
+            data: data
+         })
+      }
    })
 }

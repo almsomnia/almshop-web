@@ -1,1 +1,1 @@
-declare type HintedString<S> = S | (string & {})
+declare type HintedString<S extends string> = S | (string & {})

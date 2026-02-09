@@ -1,9 +1,19 @@
 <script setup lang="ts">
+import type { FormSubmitEvent } from "@nuxt/ui"
+
+const emit = defineEmits<{
+   submit: [data: InferSchema<typeof $authSchema, "login">]
+}>()
+
 const schema = $authSchema().login
 const state = reactive<Partial<InferFlatSchema<typeof schema>>>({
    email: undefined,
    password: undefined,
 })
+
+function onSubmit(e: FormSubmitEvent<InferFlatSchema<typeof schema>>) {
+   emit("submit", e.data)
+}
 </script>
 
 <template>
@@ -11,7 +21,7 @@ const state = reactive<Partial<InferFlatSchema<typeof schema>>>({
       :schema="schema"
       :state="state"
       class="flex flex-col gap-2"
-      @submit="console.log"
+      @submit="onSubmit"
    >
       <UFormField name="email">
          <UInput
