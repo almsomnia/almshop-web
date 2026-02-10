@@ -6,6 +6,7 @@ declare namespace DTO {
       price: number
       stock: number
       categoryId: number
+      category: DTO.Category
       createdAt: string
       updatedAt: string
    }

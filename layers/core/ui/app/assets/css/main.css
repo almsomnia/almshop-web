@@ -10,3 +10,7 @@
 .dark {
    --ui-primary: var(--ui-color-neutral-50);
 }
+
+:root {
+   @apply selection:bg-inverted selection:text-inverted;
+}
