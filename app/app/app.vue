@@ -5,6 +5,7 @@ const { dialog } = useAppStore()
 <template>
    <div>
       <NuxtRouteAnnouncer />
+      <NuxtLoadingIndicator />
       <UApp>
          <NuxtLayout>
             <NuxtPage />

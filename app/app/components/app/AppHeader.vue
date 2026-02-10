@@ -23,8 +23,8 @@ function openLoginDialog() {
          onSubmit: async (data: InferSchema<typeof $authSchema, "login">) => {
             try {
                await authStore.login(data)
+               window.location.reload()
             } catch (error) {
-               console.dir( error)
                const err = error as NuxtError<any>
                appStore.notify({
                   title: err?.statusMessage,
@@ -44,22 +44,30 @@ onMounted(() => {
 <template>
    <UHeader :title="appTitle">
       <template #right>
-         <template v-if="largerThanMd">
-            <UColorModeButton />
-            <template v-if="!authStore.user">
-               <UButton
-                  label="Login"
-                  icon="lucide:log-in"
-                  variant="outline"
-                  color="neutral"
-                  @click="openLoginDialog"
-               />
-               <UButton
-                  label="Register"
-                  icon="lucide:user-plus"
-               />
+         <ClientOnly>
+            <template v-if="largerThanMd">
+               <UColorModeButton />
+               <template v-if="!authStore.user">
+                  <UButton
+                     label="Login"
+                     icon="lucide:log-in"
+                     variant="outline"
+                     color="neutral"
+                     @click="openLoginDialog"
+                  />
+                  <UButton
+                     label="Register"
+                     icon="lucide:user-plus"
+                  />
+               </template>
+               <template v-else>
+                  <UUser
+                     :name="authStore.user.name"
+                     :description="authStore.user.email"
+                  />
+               </template>
             </template>
-         </template>
+         </ClientOnly>
       </template>
    </UHeader>
 </template>

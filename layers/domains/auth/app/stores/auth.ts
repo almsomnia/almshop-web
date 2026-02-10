@@ -18,10 +18,15 @@ export const useAuthStore = defineStore(
          user.value = undefined
       }
 
+      function $reset() {
+         user.value = undefined
+      }
+
       return {
          user,
          login,
          logout,
+         $reset
       }
    },
    {

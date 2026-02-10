@@ -9,7 +9,7 @@ export default defineNuxtConfig({
    extends: ["../layers/domains/auth", "../layers/domains/products"],
 
    routeRules: {
-      '/admin': { appLayout: "admin" }
+      "/admin": { appLayout: "admin", ssr: false },
    },
 
    // all paths are relative from ./nuxt
