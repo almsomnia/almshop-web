@@ -5,6 +5,7 @@
    "editor.quickSuggestions": {
       "strings": "on"
    },
+   "tailwindCSS.experimental.configFile": "./layers/core/ui/app/assets/css/main.css",
    "tailwindCSS.classAttributes": ["class", "ui"],
    "tailwindCSS.experimental.classRegex": [
       ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]

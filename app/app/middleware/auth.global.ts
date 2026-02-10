@@ -1,5 +1,8 @@
 export default defineNuxtRouteMiddleware((to, from) => {
    const token = useCookie("almshop-auth-token")
+
+   if (to.meta.groups?.includes("auth")) return
+
    if (!token.value && to.path.includes("admin")) {
       const err = createError({
          status: 404,

@@ -9,6 +9,7 @@ export const useAuthStore = defineStore(
             body: payload,
          })
          user.value = response.data as DTO.User
+         return response
       }
 
       async function logout() {
