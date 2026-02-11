@@ -29,12 +29,22 @@ export default defineAppConfig({
       select: {
          slots: {
             base: "w-full",
-         }
+         },
       },
       selectMenu: {
          slots: {
             base: "w-full",
-         }
-      }
+         },
+      },
+      textarea: {
+         slots: {
+            root: "w-full",
+         },
+      },
+      inputNumber: {
+         slots: {
+            root: "w-full",
+         },
+      },
    },
 })

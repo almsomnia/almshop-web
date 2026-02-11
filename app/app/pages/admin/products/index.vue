@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { NuxtError } from "#app";
 import type { TableColumn, DropdownMenuItem } from "@nuxt/ui"
 import type { Row } from "@tanstack/vue-table"
 
@@ -117,14 +118,11 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
          onSelect: (e) => {
             appStore.showDialog(
                "Product Detail",
-               h(
-                  resolveComponent("DetailProduct"),
-                  {
-                     data: row.original,
-                  }
-               )
+               h(resolveComponent("DetailProduct"), {
+                  data: row.original,
+               })
             )
-         }
+         },
       },
       {
          label: "Edit",
@@ -139,6 +137,58 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
          color: "error",
       },
    ]
+}
+
+const formLoading = shallowRef(false)
+
+function openForm() {
+   appStore.showDialog(
+      "New Product",
+      h(
+         resolveComponent("FormProduct"),
+         {
+            loading: formLoading,
+            onSubmit: async (values: InferSchema<typeof $productSchema, "create">) => {
+               try {
+                  formLoading.value = true
+                  const response = await $api<API.Response<DTO.Product>>(`/api/products`, {
+                     method: "post",
+                     body: values,
+                  })
+                  appStore.notify({
+                     title: "Success",
+                     description: response.meta.message,
+                  })
+                  appStore.closeDialog()
+                  refresh()
+               } catch (error) {
+                  const err = error as NuxtError
+                  appStore.notify({
+                     title: err.statusMessage,
+                     description: err.message,
+                     color: "error",
+                  })
+               } finally {
+                  formLoading.value = false
+               }
+            }
+         },
+         {
+            "category-selector": (slotProps: {
+               modelValue: number | undefined
+               "onUpdate:modelValue": (val: number | undefined) => void
+               loading?: boolean
+            }) =>
+               h(resolveComponent("SelectCategory"), {
+                  modelValue: slotProps.modelValue,
+                  "onUpdate:modelValue": slotProps["onUpdate:modelValue"],
+                  clear: true,
+                  loading: slotProps.loading,
+                  placeholder: "Category",
+               }),
+         }
+      )
+   )
 }
 </script>
 
@@ -167,6 +217,12 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
                   clear
                   placeholder="Category"
                   class="max-w-3xs"
+               />
+               <UButton
+                  label="New Product"
+                  icon="lucide:plus"
+                  class="ms-auto"
+                  @click="() => openForm()"
                />
             </div>
          </template>
