@@ -10,6 +10,7 @@ export default defineNuxtConfig({
       "../layers/domains/auth",
       "../layers/domains/products",
       "../layers/domains/categories",
+      "../layers/domains/users",
    ],
 
    routeRules: {

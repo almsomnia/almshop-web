@@ -77,7 +77,7 @@ const columns: TableColumn<CategoryData>[] = [
                   class: !row.getCanExpand() && "invisible",
                   onClick: row.getToggleExpandedHandler(),
                }),
-               row.original.name
+               row.original.name,
             ]
          )
       },

@@ -84,7 +84,7 @@ onMounted(async () => {
       :clear="props.clear"
       class="w-full"
       :ui="{
-         itemLabel: 'ms-2'
+         itemLabel: 'ms-2',
       }"
    />
 </template>
