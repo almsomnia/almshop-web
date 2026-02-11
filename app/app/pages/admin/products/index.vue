@@ -104,6 +104,7 @@ const columns: TableColumn<DTO.Product>[] = [
    },
 ]
 
+const appStore = useAppStore()
 function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
    return [
       {
@@ -113,6 +114,17 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
       {
          label: "Detail",
          icon: "lucide:eye",
+         onSelect: (e) => {
+            appStore.showDialog(
+               "Product Detail",
+               h(
+                  resolveComponent("DetailProduct"),
+                  {
+                     data: row.original,
+                  }
+               )
+            )
+         }
       },
       {
          label: "Edit",
