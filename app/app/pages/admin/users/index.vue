@@ -8,11 +8,11 @@ definePageMeta({
    pageOrder: 3,
 })
 
-const query = reactive<API.Query<{ name: string; categoryId: number }>>({
+const query = reactive<API.Query<{ name: string; role: string }>>({
    page: 1,
    perPage: 10,
    name: "",
-   categoryId: undefined,
+   role: undefined,
 })
 
 const { data, pending, refresh } = useApi(`/api/users`, {
@@ -108,6 +108,8 @@ function getRowItems(row: Row<DTO.User>): DropdownMenuItem[] {
       },
    ]
 }
+
+const roleItems: string[] = ["admin", "consumer"]
 </script>
 
 <template>
@@ -129,6 +131,17 @@ function getRowItems(row: Row<DTO.User>): DropdownMenuItem[] {
                   placeholder="Search..."
                   icon="lucide:search"
                   class="max-w-3xs"
+               />
+               <USelectMenu
+                  v-model="query.role"
+                  :items="roleItems"
+                  placeholder="Role"
+                  clear
+                  class="max-w-3xs"
+                  :ui="{
+                     itemLabel: 'capitalize',
+                     base: 'capitalize'
+                  }"
                />
             </div>
          </template>
