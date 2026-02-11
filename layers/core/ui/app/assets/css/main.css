@@ -2,6 +2,7 @@
 @import "@nuxt/ui";
 
 @source inline("max-w-{xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl}");
+@source inline("ps-{4..24..4}");
 
 :root {
    --ui-primary: var(--ui-color-neutral-900);

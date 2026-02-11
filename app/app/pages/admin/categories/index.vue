@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import type { NuxtError } from "#app"
 import type { TableColumn, DropdownMenuItem } from "@nuxt/ui"
 import type { Row } from "@tanstack/vue-table"
 
-type CategoryData = DTO.Category & { children: DTO.Category[] }
+type CategoryData = DTO.Category & { children: CategoryData[] }
 
 definePageMeta({
    pageName: "Categories",
    pageIcon: "lucide:folder",
    pageOrder: 2,
 })
+
+const appStore = useAppStore()
 
 const query = reactive<API.Query<{ name: string }>>({
    name: undefined,
@@ -20,25 +23,23 @@ const { data, pending, refresh } = useApi(`/api/categories`, {
    query,
    transform: (res) => {
       const { items } = res.data
-      const childrenMap = new Map<number, DTO.Category[]>()
-      const parents: CategoryData[] = []
+      const map = new Map<number, CategoryData>()
+      const roots: CategoryData[] = []
 
       for (const item of items) {
-         if (!item.parentId) {
-            parents.push({ ...item, children: [] })
+         map.set(item.id, { ...item, children: [] })
+      }
+
+      for (const item of items) {
+         const node = map.get(item.id)!
+         if (item.parentId && map.has(item.parentId)) {
+            map.get(item.parentId)!.children.push(node)
          } else {
-            if (!childrenMap.has(item.parentId)) {
-               childrenMap.set(item.parentId, [])
-            }
-            childrenMap.get(item.parentId)?.push(item)
+            roots.push(node)
          }
       }
 
-      for (const parent of parents) {
-         parent.children = childrenMap.get(parent.id) ?? []
-      }
-
-      return parents
+      return roots
    },
    watch: false,
 })
@@ -64,7 +65,7 @@ const columns: TableColumn<CategoryData>[] = [
             {
                class: "flex items-center gap-4",
                style: {
-                  paddingLeft: `${row.depth * 1.5}rem`,
+                  paddingLeft: `${row.depth * 1.15}rem`,
                },
             },
             [
@@ -121,6 +122,7 @@ function getRowItems(row: Row<CategoryData>): DropdownMenuItem[] {
       {
          label: "Edit",
          icon: "lucide:edit",
+         onSelect: () => openForm(row.original),
       },
       {
          type: "separator",
@@ -134,10 +136,60 @@ function getRowItems(row: Row<CategoryData>): DropdownMenuItem[] {
 }
 
 function getSubRows(row: CategoryData) {
-   return row.children as CategoryData[]
+   return row.children
 }
 
 const tableExpanded = ref<Record<number, boolean>>({})
+
+const formLoading = shallowRef(false)
+
+function openForm(data?: DTO.Category) {
+   const title = data ? "Edit Category" : "New Category"
+
+   appStore.showDialog(
+      title,
+      h(resolveComponent("FormCategory"), {
+         loading: formLoading,
+         data: data,
+         onSubmit: async (
+            values: InferSchema<typeof $categorySchema, "create">
+         ) => {
+            try {
+               formLoading.value = true
+
+               const apiHandler = () =>
+                  data?.id
+                     ? $api(`/api/categories/${data.id}`, {
+                          method: "patch",
+                          body: values,
+                       })
+                     : $api(`/api/categories`, {
+                          method: "post",
+                          body: values,
+                       })
+
+               const response = await apiHandler()
+               appStore.notify({
+                  title: "Success",
+                  description: response.meta.message,
+               })
+
+               appStore.closeDialog()
+               refresh()
+            } catch (error) {
+               const err = error as NuxtError
+               appStore.notify({
+                  title: err.statusMessage,
+                  description: err.message,
+                  color: "error",
+               })
+            } finally {
+               formLoading.value = false
+            }
+         },
+      })
+   )
+}
 </script>
 
 <template>
@@ -148,6 +200,14 @@ const tableExpanded = ref<Record<number, boolean>>({})
             placeholder="Search..."
             icon="lucide:search"
             class="max-w-3xs"
+         />
+         <UButton
+            label="New Category"
+            icon="lucide:plus"
+            color="primary"
+            variant="solid"
+            class="ms-auto"
+            @click="() => openForm()"
          />
       </div>
       <UTable
@@ -162,6 +222,6 @@ const tableExpanded = ref<Record<number, boolean>>({})
             tr: 'group',
             td: 'empty:p-0 group-has-[td:not(:empty)]:border-b border-default',
          }"
-      ></UTable>
+      />
    </div>
 </template>

@@ -9,10 +9,14 @@ const props = withDefaults(
       valueKey?: string
       placeholder?: string
       clear?: boolean
+      parentSelectable?: boolean
+      disabled?: number[]
    }>(),
    {
       labelKey: "label",
       valueKey: "value",
+      parentSelectable: false,
+      disabled: () => [],
    }
 )
 
@@ -34,12 +38,11 @@ async function fetchItems() {
 
    const allItems = response.data.items
    const childrenMap = new Map<number, DTO.Category[]>()
-   const parents: DTO.Category[] = []
+   const roots: DTO.Category[] = []
 
-   // O(N) - Group categories in one pass
    for (const item of allItems) {
       if (!item.parentId) {
-         parents.push(item)
+         roots.push(item)
       } else {
          if (!childrenMap.has(item.parentId)) {
             childrenMap.set(item.parentId, [])
@@ -48,28 +51,41 @@ async function fetchItems() {
       }
    }
 
-   items.value = []
+   const flattened: Option[] = []
 
-   // O(N) - Build flat list for SelectMenu
-   for (const parent of parents) {
-      items.value.push({
-         type: "label",
-         label: parent.name,
-      })
+   const pushItems = (nodes: DTO.Category[], depth: number) => {
+      for (const node of nodes) {
+         const hasChildren = (childrenMap.get(node.id)?.length ?? 0) > 0
+         const isDisabled = props.disabled.includes(node.id)
 
-      const children = childrenMap.get(parent.id) ?? []
-      for (const child of children) {
-         items.value.push({
-            label: child.name,
-            value: child.id,
-         })
+         if (depth === 0 && !props.parentSelectable && hasChildren) {
+            flattened.push({
+               type: "label",
+               label: node.name,
+            })
+         } else {
+            flattened.push({
+               label: node.name,
+               value: node.id,
+               disabled: isDisabled,
+               // Use space for indentation
+               class: depth > 0 ? `ps-${depth * 4}` : undefined,
+            })
+         }
+
+         const children = childrenMap.get(node.id) ?? []
+         if (children.length > 0) {
+            pushItems(children, depth + 1)
+         }
       }
    }
+
+   pushItems(roots, 0)
+   items.value = flattened
 }
 
 onMounted(async () => {
    await fetchItems()
-   props.valueKey
 })
 </script>
 
@@ -83,8 +99,5 @@ onMounted(async () => {
       v-model:search-term="search"
       :clear="props.clear"
       class="w-full"
-      :ui="{
-         itemLabel: 'ms-2',
-      }"
    />
 </template>

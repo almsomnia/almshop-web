@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NuxtError } from "#app";
+import type { NuxtError } from "#app"
 import type { TableColumn, DropdownMenuItem } from "@nuxt/ui"
 import type { Row } from "@tanstack/vue-table"
 
@@ -148,13 +148,18 @@ function openForm() {
          resolveComponent("FormProduct"),
          {
             loading: formLoading,
-            onSubmit: async (values: InferSchema<typeof $productSchema, "create">) => {
+            onSubmit: async (
+               values: InferSchema<typeof $productSchema, "create">
+            ) => {
                try {
                   formLoading.value = true
-                  const response = await $api<API.Response<DTO.Product>>(`/api/products`, {
-                     method: "post",
-                     body: values,
-                  })
+                  const response = await $api<API.Response<DTO.Product>>(
+                     `/api/products`,
+                     {
+                        method: "post",
+                        body: values,
+                     }
+                  )
                   appStore.notify({
                      title: "Success",
                      description: response.meta.message,
@@ -171,7 +176,7 @@ function openForm() {
                } finally {
                   formLoading.value = false
                }
-            }
+            },
          },
          {
             "category-selector": (slotProps: {

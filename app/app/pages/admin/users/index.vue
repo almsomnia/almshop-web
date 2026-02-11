@@ -140,7 +140,7 @@ const roleItems: string[] = ["admin", "consumer"]
                   class="max-w-3xs"
                   :ui="{
                      itemLabel: 'capitalize',
-                     base: 'capitalize'
+                     base: 'capitalize',
                   }"
                />
             </div>

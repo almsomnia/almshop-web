@@ -4,6 +4,6 @@ export default defineEventHandler(async (event) => {
 
    return await $api<API.Response<API.Pagination<DTO.User[]>>>(`/users`, {
       method: "get",
-      query
+      query,
    })
 })
