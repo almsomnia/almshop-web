@@ -39,7 +39,7 @@ function onSubmit(e: FormSubmitEvent<InferFlatSchema<typeof schema>>) {
             icon="lucide:lock"
          />
       </UFormField>
-      <div class="flex items-center justify-end mt-2">
+      <div class="mt-2 flex items-center justify-end">
          <UButton
             type="submit"
             label="Login"

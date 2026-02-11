@@ -27,7 +27,7 @@ export const useAuthStore = defineStore(
          user,
          login,
          logout,
-         $reset
+         $reset,
       }
    },
    {

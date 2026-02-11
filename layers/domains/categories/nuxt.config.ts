@@ -11,7 +11,7 @@ const typeDeclarationTsConfig = {
 export default defineNuxtConfig({
    compatibilityDate: "2025-07-15",
    devtools: { enabled: true },
-   extends: ["../../core/ui", "../../core/server"],
+   extends: ["../../core/server", "../../core/ui"],
 
    components: {
       dirs: [
@@ -22,10 +22,6 @@ export default defineNuxtConfig({
       ],
    },
 
-   imports: {
-      dirs: [join(currentDir, "app/stores/**")],
-   },
-
    // all paths are relative from ./.nuxt
    typescript: {
       tsConfig: { ...typeDeclarationTsConfig },
@@ -33,8 +29,6 @@ export default defineNuxtConfig({
       nodeTsConfig: { ...typeDeclarationTsConfig },
    },
    nitro: {
-      typescript: {
-         tsConfig: { ...typeDeclarationTsConfig },
-      },
+      typescript: { tsConfig: { ...typeDeclarationTsConfig } },
    },
 })

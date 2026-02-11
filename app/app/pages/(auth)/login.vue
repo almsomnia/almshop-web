@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NuxtError } from '#app'
+import type { NuxtError } from "#app"
 
 definePageMeta({
    layout: false,
@@ -28,7 +28,7 @@ async function onSubmit(data: InferSchema<typeof $authSchema, "login">) {
       appStore.notify({
          title: err?.statusMessage,
          description: err?.message,
-         color: "error"
+         color: "error",
       })
    }
 }
@@ -51,8 +51,10 @@ async function onSubmit(data: InferSchema<typeof $authSchema, "login">) {
                      alt="login-img"
                   />
                </ClientOnly>
-               <div class="absolute bottom-0 start-0 ms-4 mb-4">
-                  <h1 class="uppercase text-4xl tracking-widest text-primary-50">
+               <div class="absolute start-0 bottom-0 ms-4 mb-4">
+                  <h1
+                     class="text-primary-50 text-4xl tracking-widest uppercase"
+                  >
                      {{ appConfig.app.title }}
                   </h1>
                </div>

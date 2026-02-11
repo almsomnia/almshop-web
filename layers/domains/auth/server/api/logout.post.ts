@@ -1,13 +1,13 @@
 export default eventHandler(async (event) => {
    deleteCookie(event, "almshop-auth-token", {
-      path: "/"
+      path: "/",
    })
 
    return {
       data: true,
       meta: {
          message: "Logged out successfully",
-         error: ""
-      }
+         error: "",
+      },
    }
 })

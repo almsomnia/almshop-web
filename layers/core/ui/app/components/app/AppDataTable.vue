@@ -30,7 +30,7 @@ const perPage = defineModel<number>("perPage", { required: false, default: 10 })
          :columns="columns"
          :loading="props.loading"
          :ui="{
-            base: 'border-b border-default'
+            base: 'border-b border-default',
          }"
       >
          <template #empty>

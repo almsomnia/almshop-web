@@ -28,7 +28,7 @@ function openLoginDialog() {
                const err = error as NuxtError<any>
                appStore.notify({
                   title: err?.statusMessage,
-                  description: err?.message
+                  description: err?.message,
                })
             }
          },

@@ -44,7 +44,11 @@ export default function <
 
       if (prevFiltered) {
          let same = true
-         for (const k in next) if (next[k] !== (prevFiltered as any)[k]) { same = false; break }
+         for (const k in next)
+            if (next[k] !== (prevFiltered as any)[k]) {
+               same = false
+               break
+            }
          if (same) return prevFiltered // re-use reference → tidak trigger
       }
       prevFiltered = next

@@ -106,20 +106,20 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
       },
       {
          label: "Detail",
-         icon: "lucide:eye"
+         icon: "lucide:eye",
       },
       {
          label: "Edit",
-         icon: "lucide:edit"
+         icon: "lucide:edit",
       },
       {
-         type: "separator"
+         type: "separator",
       },
       {
          label: "Delete",
          icon: "lucide:trash",
-         color: "error"
-      }
+         color: "error",
+      },
    ]
 }
 </script>
@@ -142,6 +142,12 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
                   v-model="query.name"
                   placeholder="Search..."
                   icon="lucide:search"
+                  class="max-w-3xs"
+               />
+               <SelectCategory
+                  v-model="query.categoryId"
+                  clear
+                  placeholder="Category"
                   class="max-w-3xs"
                />
             </div>

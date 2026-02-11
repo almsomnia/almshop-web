@@ -6,7 +6,11 @@ const typeDeclarationTsConfig = {
 export default defineNuxtConfig({
    compatibilityDate: "2025-07-15",
    devtools: { enabled: true },
-   extends: ["../layers/domains/auth", "../layers/domains/products"],
+   extends: [
+      "../layers/domains/auth",
+      "../layers/domains/products",
+      "../layers/domains/categories",
+   ],
 
    routeRules: {
       "/admin/**": { appLayout: "admin", ssr: false },

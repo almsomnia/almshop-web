@@ -17,8 +17,8 @@ export default function (event: H3Event) {
             status: response.status,
             statusText: response.statusText,
             message: data.meta.error,
-            data: data
+            data: data,
          })
-      }
+      },
    })
 }

@@ -1,0 +1,14 @@
+{
+  "name": "@domain/categories",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "postinstall": "nuxt prepare",
+    "clean": "pnpm dlx rimraf .nuxt node_modules"
+  },
+  "dependencies": {
+    "nuxt": "catalog:core",
+    "vue": "catalog:core",
+    "vue-router": "catalog:core"
+  }
+}

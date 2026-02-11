@@ -1,8 +1,5 @@
 import type { UseFetchOptions, FetchResult } from "nuxt/app"
-import type {
-   NitroFetchRequest,
-   AvailableRouterMethod
-} from "nitropack"
+import type { NitroFetchRequest, AvailableRouterMethod } from "nitropack"
 
 type KeysOf<T> = Array<
    T extends T ? (keyof T extends string ? keyof T : never) : never
@@ -30,6 +27,6 @@ export function useApi<
    })
    return {
       ...res,
-      pending: computed(() => res.status.value === "pending")
+      pending: computed(() => res.status.value === "pending"),
    }
 }

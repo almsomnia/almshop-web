@@ -8,7 +8,10 @@ import type {
 export default function <
    T = unknown,
    R extends NitroFetchRequest = NitroFetchRequest,
->(endpoint: R, opts?: NitroFetchOptions<R>): Promise<TypedInternalResponse<R, T>> {
+>(
+   endpoint: R,
+   opts?: NitroFetchOptions<R>
+): Promise<TypedInternalResponse<R, T>> {
    const handler = $fetch.create({
       retry: false,
       onResponseError: ({ response }) => {

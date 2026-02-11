@@ -10,7 +10,7 @@ const props = defineProps<{
    <UError
       :error="error"
       :clear="{
-         icon: 'lucide:arrow-left'
+         icon: 'lucide:arrow-left',
       }"
    />
 </template>
