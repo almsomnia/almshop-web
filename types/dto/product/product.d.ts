@@ -5,8 +5,8 @@ declare namespace DTO {
       description: string | null
       price: number
       stock: number
-      categoryId: number
-      category: DTO.Category
+      categoryId: number | null
+      category: DTO.Category | null
       createdAt: string
       updatedAt: string
    }
