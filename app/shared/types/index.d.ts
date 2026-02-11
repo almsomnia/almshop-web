@@ -3,6 +3,7 @@ declare module "#app" {
       pageName?: string
       pageIcon?: string
       pageOrder?: number
+      hideOnSidebar?: boolean
    }
 }
 

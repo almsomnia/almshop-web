@@ -7,6 +7,7 @@ const router = useRouter()
 const adminRoutes = router
    .getRoutes()
    .filter((item) => item.path.startsWith("/admin"))
+   .filter((item) => !item.meta.hideOnSidebar)
    .sort((a, b) => (a.meta.pageOrder ?? 0) - (b.meta.pageOrder ?? 0))
 
 const items: NavigationMenuItem[][] = [
