@@ -3,19 +3,20 @@ import type { NavigationMenuItem } from "@nuxt/ui"
 
 const appConfig = useAppConfig()
 
+const router = useRouter()
+const adminRoutes = router
+   .getRoutes()
+   .filter((item) => item.path.startsWith("/admin"))
+   .sort((a, b) => (a.meta.pageOrder ?? 0) - (b.meta.pageOrder ?? 0))
+
 const items: NavigationMenuItem[][] = [
-   [
-      {
-         label: "Dashboard",
-         icon: "lucide:house",
-         to: "/admin",
-      },
-      {
-         label: "Products",
-         icon: "lucide:package",
-         to: "/admin/products",
-      },
-   ],
+   adminRoutes.map((route) => {
+      return {
+         label: route.meta.pageName,
+         to: route.path,
+         icon: route.meta.pageIcon,
+      }
+   }),
 ]
 
 const authStore = useAuthStore()

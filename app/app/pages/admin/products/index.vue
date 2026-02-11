@@ -2,6 +2,12 @@
 import type { TableColumn, DropdownMenuItem } from "@nuxt/ui"
 import type { Row } from "@tanstack/vue-table"
 
+definePageMeta({
+   pageName: "Products",
+   pageIcon: "lucide:package",
+   pageOrder: 1,
+})
+
 const query = reactive<API.Query<{ name: string; categoryId: number }>>({
    page: 1,
    perPage: 10,
