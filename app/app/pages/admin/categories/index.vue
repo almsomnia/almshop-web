@@ -131,6 +131,48 @@ function getRowItems(row: Row<CategoryData>): DropdownMenuItem[] {
          label: "Delete",
          icon: "lucide:trash",
          color: "error",
+         onSelect: () => {
+            appStore.showDialog(
+               "Delete Category",
+               h(resolveComponent("AppConfirmationPrompt"), {
+                  prompt: `Are you sure you want to delete "${row.original.name}"?`,
+                  positiveButtonProps: {
+                     label: "Delete",
+                     color: "error",
+                     icon: "lucide:trash",
+                     variant: "solid",
+                  },
+                  negativeButtonProps: {
+                     label: "Cancel",
+                     color: "neutral",
+                     variant: "outline",
+                  },
+                  onPositive: async () => {
+                     try {
+                        const response = await $api(`/api/categories/${row.original.id}`, {
+                           method: "delete",
+                        })
+                        appStore.notify({
+                           title: "Success",
+                           description: response.meta.message,
+                        })
+                        appStore.closeDialog()
+                        refresh()
+                     } catch (error) {
+                        const err = error as NuxtError
+                        appStore.notify({
+                           title: err.statusMessage,
+                           description: err.message,
+                           color: "error",
+                        })
+                     }
+                  },
+                  onNegative: () => {
+                     appStore.closeDialog()
+                  },
+               })
+            )
+         },
       },
    ]
 }
