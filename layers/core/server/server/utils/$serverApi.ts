@@ -2,7 +2,7 @@ import type { H3Event } from "h3"
 
 export default function (event: H3Event) {
    const config = useRuntimeConfig(event)
-   const token = getCookie(event, "almshop-access-token")
+   const token = getCookie(event, "almshop-auth-token")
    return $fetch.create({
       baseURL: config.apiUrl,
       onRequest: ({ request, options }) => {
