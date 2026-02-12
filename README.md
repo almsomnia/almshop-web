@@ -6,20 +6,20 @@ This is the frontend repository for the **Almshop** project. It is built using *
 
 ## Architecture
 
-The project is structured as a monorepo using pnpm workspaces:
+The project is structured as a monorepo using pnpm workspaces with a tiered "Layer" inheritance model:
 
-- **`app/`**: The main Nuxt application entry point. This package consumes the functionality provided by the layers.
-- **`layers/`**: Modular layers that isolate features and shared logic.
-   - **`core/ui`**: Contains shared UI components, styles, and configuration.
-   - **`domains/auth`**: Encapsulates authentication-related logic, pages, and components.
-- **`utils/`**: Internal utilities for development.
-   - **`layer-generator`**: A CLI tool to scaffold new core or domain layers.
+- **`app/`**: The main Nuxt application entry point. It consumes and orchestrates functionality from the domain layers.
+- **`layers/base`**: The foundation layer. Contains low-level utilities, base composables, and fundamental shared logic used by all other layers.
+- **`layers/core`**: Infrastructure layers. Provides shared cross-cutting concerns like UI design systems, API fetching clients, and global server utilities.
+- **`layers/domains`**: Feature-specific layers. Encapsulates business logic, stores, components, and server-side logic for specific application domains (e.g., Auth, Products, Categories, Users).
+- **`types/`**: Centralized TypeScript definitions for API responses and Data Transfer Objects (DTOs), shared across the entire workspace.
+- **`utils/`**: Internal development utilities and tooling, such as the layer generator CLI.
 
 ## Key Technologies
 
 - **Framework:** Nuxt 4, Vue 3
 - **Package Manager:** pnpm (with workspaces and catalogs)
-- **Styling:** Tailwind CSS (via `@nuxt/ui` in `core/ui`)
+- **Styling:** Tailwind CSS (via Nuxt UI)
 - **Language:** TypeScript
 
 ## Development Workflow
@@ -84,7 +84,7 @@ pnpm clean:all
 - `package.json`: Root configuration defining workspaces and global scripts.
 - `pnpm-workspace.yaml`: Defines workspace packages and catalogs.
 - `app/`: Main application source.
-- `layers/`: Shared feature and UI layers.
+- `layers/`: Shared feature and UI layers organized by base, core, and domains.
 - `types/`: Centralized global TypeScript type definitions.
 - `utils/`: Development utility packages.
 
