@@ -7,7 +7,12 @@ export function $productSchema() {
       categoryId: z.number().int().positive().nullish(),
    })
 
+   const files = z.object({
+      files: z.array(z.file()).min(1),
+   })
+
    return {
       create,
+      files,
    }
 }

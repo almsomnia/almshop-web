@@ -48,7 +48,7 @@ const negativeButtonProps = computed<ButtonProps>(() => {
       <div class="my-20 flex flex-col items-center">
          <UIcon
             :name="props.icon"
-            class="mb-4 size-12 text-dimmed"
+            class="text-dimmed mb-4 size-12"
          />
          <div>
             <p class="text-center text-xl font-semibold">{{ props.prompt }}</p>

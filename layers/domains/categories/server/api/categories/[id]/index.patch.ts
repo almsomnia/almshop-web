@@ -5,6 +5,6 @@ export default defineEventHandler(async (event) => {
 
    return await $api<API.Response<DTO.Category>>(`/categories/${id}`, {
       method: "patch",
-      body
+      body,
    })
 })

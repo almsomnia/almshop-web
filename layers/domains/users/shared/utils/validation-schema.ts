@@ -1,10 +1,9 @@
 export function $userSchema() {
-   const base = z
-      .object({
-         email: z.email(),
-         name: z.string().min(3).max(255),
-         role: z.enum(["admin", "consumer"]),
-      })
+   const base = z.object({
+      email: z.email(),
+      name: z.string().min(3).max(255),
+      role: z.enum(["admin", "consumer"]),
+   })
 
    const create = base
       .extend({

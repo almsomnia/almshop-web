@@ -4,6 +4,6 @@ export default defineEventHandler(async (event) => {
 
    return await $api(`/users`, {
       method: "post",
-      body
+      body,
    })
 })

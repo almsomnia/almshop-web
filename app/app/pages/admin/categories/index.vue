@@ -149,9 +149,12 @@ function getRowItems(row: Row<CategoryData>): DropdownMenuItem[] {
                   },
                   onPositive: async () => {
                      try {
-                        const response = await $api(`/api/categories/${row.original.id}`, {
-                           method: "delete",
-                        })
+                        const response = await $api(
+                           `/api/categories/${row.original.id}`,
+                           {
+                              method: "delete",
+                           }
+                        )
                         appStore.notify({
                            title: "Success",
                            description: response.meta.message,

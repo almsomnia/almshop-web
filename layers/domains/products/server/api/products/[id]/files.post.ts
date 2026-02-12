@@ -1,0 +1,21 @@
+export default defineEventHandler(async (event) => {
+   const $api = $serverApi(event)
+   const id = getRouterParam(event, "id")
+   const body = await readRawBody(event)
+   const contentType = getHeader(event, "content-type")
+
+   if (!body || !contentType) {
+      throw createError({
+         statusCode: 400,
+         statusMessage: "Invalid multipart request",
+      })
+   }
+
+   return await $api(`/products/${id}/files`, {
+      method: "POST",
+      body,
+      headers: {
+         "Content-Type": contentType,
+      },
+   })
+})
