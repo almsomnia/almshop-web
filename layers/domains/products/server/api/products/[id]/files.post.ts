@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
    const $api = $serverApi(event)
    const id = getRouterParam(event, "id")
-   const body = await readRawBody(event)
+   const body = await readRawBody(event, false)
    const contentType = getHeader(event, "content-type")
 
    if (!body || !contentType) {
