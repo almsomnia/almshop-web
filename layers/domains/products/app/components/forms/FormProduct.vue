@@ -4,6 +4,7 @@ import type { FormSubmitEvent } from "@nuxt/ui"
 const props = withDefaults(
    defineProps<{
       loading?: Ref<boolean>
+      data?: DTO.Product
    }>(),
    {
       loading: () => shallowRef(false),
@@ -28,6 +29,16 @@ const loading = computed(() => props.loading.value)
 function onSubmit(e: FormSubmitEvent<InferFlatSchema<typeof schema>>) {
    emit("submit", e.data)
 }
+
+onMounted(() => {
+   if (props.data) {
+      state.name = props.data.name
+      state.description = props.data.description
+      state.categoryId = props.data.categoryId
+      state.price = props.data.price
+      state.stock = props.data.stock
+   }
+})
 </script>
 
 <template>

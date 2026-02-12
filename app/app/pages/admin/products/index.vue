@@ -127,6 +127,7 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
       {
          label: "Edit",
          icon: "lucide:edit",
+         onSelect: () => openForm(row.original),
       },
       {
          type: "separator",
@@ -135,31 +136,79 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
          label: "Delete",
          icon: "lucide:trash",
          color: "error",
+         onSelect: () => {
+            appStore.showDialog(
+               "Delete Product",
+               h(resolveComponent("AppConfirmationPrompt"), {
+                  prompt: `Are you sure you want to delete "${row.original.name}"?`,
+                  positiveButtonProps: {
+                     label: "Delete",
+                     color: "error",
+                     icon: "lucide:trash",
+                     variant: "solid",
+                  },
+                  onPositive: async () => {
+                     try {
+                        await $api(`/api/products/${row.original.id}`, {
+                           method: "delete",
+                        })
+                        appStore.notify({
+                           title: "Success",
+                           description: "Product deleted successfully",
+                        })
+                        appStore.closeDialog()
+                        refresh()
+                     } catch (error) {
+                        const err = error as NuxtError
+                        appStore.notify({
+                           title: err.statusMessage,
+                           description: err.message,
+                           color: "error",
+                        })
+                     }
+                  },
+                  onNegative: () => {
+                     appStore.closeDialog()
+                  },
+               })
+            )
+         },
       },
    ]
 }
 
 const formLoading = shallowRef(false)
 
-function openForm() {
+function openForm(data?: DTO.Product) {
    appStore.showDialog(
-      "New Product",
+      data ? "Edit Product" : "New Product",
       h(
          resolveComponent("FormProduct"),
          {
             loading: formLoading,
+            data,
             onSubmit: async (
                values: InferSchema<typeof $productSchema, "create">
             ) => {
                try {
                   formLoading.value = true
-                  const response = await $api<API.Response<DTO.Product>>(
-                     `/api/products`,
-                     {
-                        method: "post",
-                        body: values,
-                     }
-                  )
+
+                  const apiHandler = () =>
+                     data
+                        ? $api<API.Response<DTO.Product>>(
+                             `/api/products/${data.id}`,
+                             {
+                                method: "patch",
+                                body: values,
+                             }
+                          )
+                        : $api<API.Response<DTO.Product>>(`/api/products`, {
+                             method: "post",
+                             body: values,
+                          })
+
+                  const response = await apiHandler()
+
                   appStore.notify({
                      title: "Success",
                      description: response.meta.message,
