@@ -16,7 +16,7 @@ const query = reactive<API.Query<{ name: string; categoryId: number }>>({
    categoryId: undefined,
 })
 
-const { data, pending, refresh } = useApi(`/api/products`, {
+const { data, pending, refresh } = useFetch(`/api/products`, {
    key: "products",
    method: "get",
    query,
@@ -116,18 +116,56 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
          label: "Detail",
          icon: "lucide:eye",
          onSelect: (e) => {
-            appStore.showDialog(
-               "Product Detail",
-               h(resolveComponent("DetailProduct"), {
-                  data: row.original,
-               })
-            )
+            navigateTo(`/admin/products/${row.original.id}`)
          },
       },
       {
          label: "Edit",
          icon: "lucide:edit",
          onSelect: () => openForm(row.original),
+      },
+      {
+         label: "Files",
+         icon: "lucide:file",
+         onSelect: () => {
+            appStore.showDialog(
+               "Manage Product Files",
+               h(resolveComponent("FormProductFile"), {
+                  productId: row.original.id,
+                  onSubmit: async (
+                     values: InferSchema<typeof $productSchema, "files">
+                  ) => {
+                     try {
+                        const formData = new FormData()
+                        values.files.forEach((file) => {
+                           formData.append("files", file)
+                        })
+
+                        const response = await $api<API.Response<unknown>>(
+                           `/api/products/${row.original.id}/files`,
+                           {
+                              method: "post",
+                              body: formData,
+                           }
+                        )
+                        appStore.notify({
+                           title: "Success",
+                           description: response.meta.message,
+                        })
+                        appStore.closeDialog()
+                        refresh()
+                     } catch (error) {
+                        const err = error as NuxtError
+                        appStore.notify({
+                           title: err.statusMessage,
+                           description: err.message,
+                           color: "error",
+                        })
+                     }
+                  },
+               })
+            )
+         },
       },
       {
          type: "separator",
@@ -149,9 +187,12 @@ function getRowItems(row: Row<DTO.Product>): DropdownMenuItem[] {
                   },
                   onPositive: async () => {
                      try {
-                        await $api(`/api/products/${row.original.id}`, {
-                           method: "delete",
-                        })
+                        await $api<API.Response<boolean>>(
+                           `/api/products/${row.original.id}`,
+                           {
+                              method: "delete",
+                           }
+                        )
                         appStore.notify({
                            title: "Success",
                            description: "Product deleted successfully",

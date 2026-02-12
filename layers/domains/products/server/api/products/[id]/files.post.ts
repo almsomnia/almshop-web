@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
       })
    }
 
-   return await $api(`/products/${id}/files`, {
+   return await $api<API.Response<unknown>>(`/products/${id}/files`, {
       method: "POST",
       body,
       headers: {
