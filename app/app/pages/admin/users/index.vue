@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { NuxtError } from "#app"
 import type { TableColumn, DropdownMenuItem } from "@nuxt/ui"
 import type { Row } from "@tanstack/vue-table"
 
@@ -7,6 +8,8 @@ definePageMeta({
    pageIcon: "lucide:users",
    pageOrder: 3,
 })
+
+const appStore = useAppStore()
 
 const query = reactive<API.Query<{ name: string; role: string }>>({
    page: 1,
@@ -97,6 +100,7 @@ function getRowItems(row: Row<DTO.User>): DropdownMenuItem[] {
       {
          label: "Edit",
          icon: "lucide:edit",
+         onSelect: () => openForm(row.original),
       },
       {
          type: "separator",
@@ -105,11 +109,117 @@ function getRowItems(row: Row<DTO.User>): DropdownMenuItem[] {
          label: "Delete",
          icon: "lucide:trash",
          color: "error",
+         onSelect: () => {
+            appStore.showDialog(
+               "Delete Category",
+               h(resolveComponent("AppConfirmationPrompt"), {
+                  prompt: `Are you sure you want to delete "${row.original.name}"?`,
+                  positiveButtonProps: {
+                     label: "Delete",
+                     color: "error",
+                     icon: "lucide:trash",
+                     variant: "solid",
+                  },
+                  negativeButtonProps: {
+                     label: "Cancel",
+                     color: "neutral",
+                     variant: "outline",
+                  },
+                  onPositive: async () => {
+                     try {
+                        const response = await $api(
+                           `/api/users/${row.original.id}`,
+                           {
+                              method: "delete",
+                           }
+                        )
+                        appStore.notify({
+                           title: "Success",
+                           description: response.meta.message,
+                        })
+                        appStore.closeDialog()
+                        refresh()
+                     } catch (error) {
+                        const err = error as NuxtError
+                        appStore.notify({
+                           title: err.statusMessage,
+                           description: err.message,
+                           color: "error",
+                        })
+                     }
+                  },
+                  onNegative: () => {
+                     appStore.closeDialog()
+                  },
+               })
+            )
+         },
       },
    ]
 }
 
 const roleItems: string[] = ["admin", "consumer"]
+
+const formLoading = shallowRef(false)
+
+function openForm(data?: DTO.User) {
+   const title = data ? "Edit User" : "Create User"
+
+   const formSubmitHandler = async (
+      apiHandler: () => Promise<API.Response<DTO.User>>
+   ) => {
+      try {
+         formLoading.value = true
+         const res = await apiHandler()
+         appStore.notify({
+            title: "Success",
+            description: res.meta.message,
+         })
+         appStore.closeDialog()
+         refresh()
+      } catch (error) {
+         const err = error as NuxtError
+         appStore.notify({
+            title: "Error",
+            description: err.message,
+            color: "error",
+         })
+      } finally {
+         formLoading.value = false
+      }
+   }
+
+   const component = data
+      ? h(resolveComponent("FormUserUpdate"), {
+           data,
+           loading: formLoading,
+           onSubmit: async (
+              values: InferSchema<typeof $userSchema, "update">
+           ) => {
+              await formSubmitHandler(() =>
+                 $api(`/api/users/${data.id}`, {
+                    method: "patch",
+                    body: values,
+                 })
+              )
+           },
+        })
+      : h(resolveComponent("FormUserCreate"), {
+           loading: formLoading,
+           onSubmit: async (
+              values: InferSchema<typeof $userSchema, "create">
+           ) => {
+              await formSubmitHandler(() =>
+                 $api(`/api/users`, {
+                    method: "post",
+                    body: values,
+                 })
+              )
+           },
+        })
+
+   appStore.showDialog(title, component)
+}
 </script>
 
 <template>
@@ -142,6 +252,13 @@ const roleItems: string[] = ["admin", "consumer"]
                      itemLabel: 'capitalize',
                      base: 'capitalize',
                   }"
+               />
+               <UButton
+                  label="Create"
+                  icon="lucide:plus"
+                  color="primary"
+                  class="ms-auto"
+                  @click="() => openForm()"
                />
             </div>
          </template>
