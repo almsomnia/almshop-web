@@ -42,9 +42,7 @@ const heroImages = ["/img/hero-1.jpg", "/img/hero-2.jpg", "/img/hero-3.jpg"]
                container: 'h-full',
             }"
          >
-            <div
-               class="absolute inset-0 ps-4"
-            >
+            <div class="absolute inset-0 ps-4">
                <div class="h-full w-full rounded-2xl bg-neutral-950/60" />
             </div>
             <img

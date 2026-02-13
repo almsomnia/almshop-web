@@ -7,7 +7,7 @@ const props = withDefaults(
       loading?: Ref<boolean>
    }>(),
    {
-      loading: () => shallowRef(false)
+      loading: () => shallowRef(false),
    }
 )
 

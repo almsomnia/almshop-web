@@ -10,12 +10,6 @@ const route = useRoute()
             <LayoutAdminNavbar />
          </template>
          <template #body>
-            <UPageHeader
-               :title="route.meta.pageName"
-               :ui="{
-                  root: 'border-b-0 py-4'
-               }"
-            />
             <slot />
          </template>
       </UDashboardPanel>

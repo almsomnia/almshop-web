@@ -1,4 +1,9 @@
 <script setup lang="ts">
+definePageMeta({
+   pageName: "Product Detail",
+   hideOnSidebar: true
+})
+
 const route = useRoute()
 const { data, pending } = useApi(`/api/products/${route.params.id}`, {
    key: `product-${route.params.id}`,
@@ -157,12 +162,12 @@ function scrollDown() {
                   orientation="vertical"
                   :ui="{ root: 'h-4' }"
                />
-                <UBadge
+               <UBadge
                   icon="lucide:package"
                   :label="data.stock"
                   color="neutral"
                   variant="soft"
-                />
+               />
             </div>
             <p class="text-muted mt-4 text-pretty">
                {{ data.description }}

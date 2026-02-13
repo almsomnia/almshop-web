@@ -10,8 +10,8 @@ export default defineNuxtConfig({
    runtimeConfig: {
       apiUrl: import.meta.env.API_URL,
       public: {
-         storageUrl: import.meta.env.STORAGE_URL
-      }
+         storageUrl: import.meta.env.STORAGE_URL,
+      },
    },
 
    // all paths are relative from ./server

@@ -311,7 +311,7 @@ function openForm(data?: DTO.Product) {
                   v-model="query.categoryId"
                   clear
                   placeholder="Category"
-                  class="max-w-3xs"
+                  class="max-w-48"
                />
                <UButton
                   label="New Product"

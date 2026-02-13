@@ -247,7 +247,7 @@ function openForm(data?: DTO.User) {
                   :items="roleItems"
                   placeholder="Role"
                   clear
-                  class="max-w-3xs"
+                  class="max-w-48"
                   :ui="{
                      itemLabel: 'capitalize',
                      base: 'capitalize',
