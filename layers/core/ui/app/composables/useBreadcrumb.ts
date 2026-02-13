@@ -22,7 +22,6 @@ export default function () {
          breadcrumbs.unshift({
             label: (resolved.meta.pageName as string) ?? segments[i - 1],
             to: path,
-            icon: resolved.meta.pageIcon as string,
          })
       }
 
