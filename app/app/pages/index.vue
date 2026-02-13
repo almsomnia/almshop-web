@@ -84,7 +84,7 @@ function renderFile(key: string) {
                   <h2 class="text-2xl font-bold tracking-tight">
                      Shop by Category
                   </h2>
-                  <p class="text-gray-500 dark:text-gray-400">
+                  <p class="text-muted">
                      Find what you're looking for faster.
                   </p>
                </div>
@@ -108,10 +108,10 @@ function renderFile(key: string) {
                   >
                      <UIcon
                         name="lucide:tag"
-                        class="h-8 w-8 text-gray-500"
+                        class="h-8 w-8 text-muted"
                      />
                   </div>
-                  <span class="font-medium text-gray-900 dark:text-white">
+                  <span class="font-medium text-default">
                      {{ category.name }}
                   </span>
                </NuxtLink>
@@ -124,7 +124,7 @@ function renderFile(key: string) {
                   <h2 class="text-2xl font-bold tracking-tight">
                      Featured Products
                   </h2>
-                  <p class="text-gray-500 dark:text-gray-400">
+                  <p class="text-muted">
                      Our top picks for you this week.
                   </p>
                </div>
@@ -181,7 +181,7 @@ function renderFile(key: string) {
                   </template>
 
                   <div class="p-4">
-                     <div class="mb-1 text-xs text-gray-500">
+                     <div class="mb-1 text-xs text-muted">
                         {{ product.category?.name ?? "Uncategorized" }}
                      </div>
                      <h3 class="text-default line-clamp-1 font-semibold">
@@ -263,11 +263,11 @@ function renderFile(key: string) {
                      label="Subscribe"
                   />
                </UForm>
-               <p class="mt-4 text-xs text-gray-500">
+               <p class="mt-4 text-xs text-muted">
                   We care about your data. Read our
                   <NuxtLink
                      to="/privacy"
-                     class="underline hover:text-gray-300"
+                     class="underline hover:text-muted"
                      >Privacy Policy</NuxtLink
                   >.
                </p>
