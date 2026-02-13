@@ -6,6 +6,17 @@
 
 :root {
    --ui-primary: var(--ui-color-neutral-900);
+   --ui-primary-50: var(--ui-color-neutral-50);
+   --ui-primary-100: var(--ui-color-neutral-100);
+   --ui-primary-200: var(--ui-color-neutral-200);
+   --ui-primary-300: var(--ui-color-neutral-300);
+   --ui-primary-400: var(--ui-color-neutral-400);
+   --ui-primary-500: var(--ui-color-neutral-500);
+   --ui-primary-600: var(--ui-color-neutral-600);
+   --ui-primary-700: var(--ui-color-neutral-700);
+   --ui-primary-800: var(--ui-color-neutral-800);
+   --ui-primary-900: var(--ui-color-neutral-900);
+   --ui-primary-950: var(--ui-color-neutral-950);
 }
 
 .dark {

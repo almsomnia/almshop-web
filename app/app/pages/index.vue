@@ -46,7 +46,11 @@ function renderFile(key: string) {
                container: 'h-full',
             }"
          >
-            <div class="absolute inset-0 h-full w-full rounded-2xl bg-neutral-950/40" />
+            <div
+               class="absolute inset-0 ps-4"
+            >
+               <div class="h-full w-full rounded-2xl bg-neutral-950/60" />
+            </div>
             <img
                :src="item"
                class="h-full w-full rounded-2xl object-cover object-center"
@@ -68,7 +72,7 @@ function renderFile(key: string) {
                </p>
                <UButton
                   size="xl"
-                  color="primary"
+                  color="white"
                   label="Shop Now"
                   icon="lucide:shopping-bag"
                   to="/products"
@@ -76,7 +80,6 @@ function renderFile(key: string) {
             </div>
          </div>
       </section>
-
       <UContainer class="space-y-16">
          <section v-if="allCategories.length > 0">
             <div class="mb-8 flex items-center justify-between">
@@ -84,139 +87,123 @@ function renderFile(key: string) {
                   <h2 class="text-2xl font-bold tracking-tight">
                      Shop by Category
                   </h2>
-                  <p class="text-muted">
-                     Find what you're looking for faster.
-                  </p>
+                  <p class="text-muted">Find what you're looking for faster.</p>
                </div>
                <UButton
-                  variant="ghost"
+                  variant="link"
                   label="View All"
                   trailing-icon="lucide:chevron-right"
                   color="neutral"
                />
             </div>
-
             <div class="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
                <NuxtLink
                   v-for="category in allCategories.slice(0, 6)"
                   :key="category.id"
                   :to="`/categories/${category.id}`"
-                  class="group hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-950/30 flex flex-col items-center gap-3 rounded-xl border border-gray-200 p-4 transition-all dark:border-gray-800"
+                  class="group hover:border-primary border-muted flex flex-col items-center gap-3 rounded-xl border p-4 transition-all"
                >
                   <div
-                     class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 group-hover:bg-white dark:bg-gray-800 dark:group-hover:bg-gray-700"
+                     class="bg-elevated flex size-16 items-center justify-center rounded-full"
                   >
                      <UIcon
                         name="lucide:tag"
-                        class="h-8 w-8 text-muted"
+                        class="text-muted size-8"
                      />
                   </div>
-                  <span class="font-medium text-default">
+                  <span class="text-default font-medium">
                      {{ category.name }}
                   </span>
                </NuxtLink>
             </div>
          </section>
-
          <section>
             <div class="mb-8 flex items-center justify-between">
                <div>
                   <h2 class="text-2xl font-bold tracking-tight">
                      Featured Products
                   </h2>
-                  <p class="text-muted">
-                     Our top picks for you this week.
-                  </p>
+                  <p class="text-muted">Our top picks for you this week.</p>
                </div>
                <UButton
-                  variant="ghost"
+                  variant="link"
                   label="Browse All"
                   trailing-icon="lucide:chevron-right"
                   to="/products"
                   color="neutral"
                />
             </div>
-
             <div
                v-if="featuredProducts.length > 0"
-               class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+               class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
             >
-               <UCard
+               <NuxtLink
                   v-for="product in featuredProducts"
                   :key="product.id"
-                  class="group overflow-hidden transition-all hover:shadow-lg"
-                  :ui="{
-                     body: 'p-0 sm:p-0',
-                     footer: 'p-4',
-                  }"
+                  :to="`/products/${product.id}`"
+                  class="block"
                >
-                  <template #header>
-                     <div
-                        class="bg-elevated dark:bg-muted relative aspect-square overflow-hidden rounded-lg"
-                     >
-                        <img
-                           v-if="product.files?.length"
-                           :src="renderFile(product.files[0]!.key)"
-                           :alt="product.name"
-                           class="h-full w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-110"
-                        />
+                  <UCard
+                     :ui="{
+                        root: 'divide-y-0 ring-0 group overflow-hidden transition-all hover:shadow-md dark:hover:ring rounded-xl',
+                        header: 'p-2 sm:p-2',
+                        body: 'p-0 sm:p-0',
+                     }"
+                  >
+                     <template #header>
                         <div
-                           v-else
-                           class="flex h-full w-full items-center justify-center rounded-xl"
+                           class="bg-elevated dark:bg-muted relative aspect-square overflow-hidden rounded-lg"
                         >
-                           <UIcon
-                              name="lucide:image"
-                              class="text-muted h-12 w-12"
+                           <img
+                              v-if="product.files?.length"
+                              :src="renderFile(product.files[0]!.key)"
+                              :alt="product.name"
+                              class="h-full w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-110"
                            />
+                           <div
+                              v-else
+                              class="flex h-full w-full items-center justify-center rounded-xl"
+                           >
+                              <UIcon
+                                 name="lucide:image"
+                                 class="text-muted h-12 w-12"
+                              />
+                           </div>
+                           <div
+                              class="absolute top-2 right-2"
+                              @click.stop.prevent
+                           >
+                              <UButton
+                                 color="neutral"
+                                 variant="ghost"
+                                 icon="lucide:heart"
+                                 class="bg-default rounded-full backdrop-blur-sm"
+                              />
+                           </div>
                         </div>
-                        <div class="absolute top-2 right-2">
-                           <UButton
-                              color="neutral"
-                              variant="ghost"
-                              icon="lucide:heart"
-                              class="rounded-full bg-white/80 backdrop-blur-sm dark:bg-gray-900/80"
-                           />
+                     </template>
+                     <div class="p-4">
+                        <div class="text-muted text-xs">
+                           {{ product.category?.name ?? "Uncategorized" }}
                         </div>
-                     </div>
-                  </template>
-
-                  <div class="p-4">
-                     <div class="mb-1 text-xs text-muted">
-                        {{ product.category?.name ?? "Uncategorized" }}
-                     </div>
-                     <h3 class="text-default line-clamp-1 font-semibold">
-                        <NuxtLink
-                           :to="`/products/${product.id}`"
-                           class="hover:text-primary"
-                        >
+                        <h3 class="text-default line-clamp-1 font-medium">
                            {{ product.name }}
-                        </NuxtLink>
-                     </h3>
-                     <div class="mt-2 flex items-center justify-between">
-                        <span class="text-primary text-lg font-bold">
-                           {{ $formatCurrency(product.price) }}
-                        </span>
-                        <div class="text-muted flex items-center gap-1 text-sm">
-                           <UIcon
-                              name="lucide:package"
-                              class="h-4 w-4"
+                        </h3>
+                        <div class="mt-2 flex items-center justify-between">
+                           <span class="text-primary text-lg font-bold">
+                              {{ $formatCurrency(product.price) }}
+                           </span>
+                           <UBadge
+                              :label="product.stock"
+                              icon="lucide:package"
+                              variant="soft"
+                              color="neutral"
                            />
-                           {{ product.stock }}
                         </div>
                      </div>
-                  </div>
-
-                  <template #footer>
-                     <UButton
-                        block
-                        color="primary"
-                        label="Add to Cart"
-                        icon="lucide:shopping-cart"
-                     />
-                  </template>
-               </UCard>
+                  </UCard>
+               </NuxtLink>
             </div>
-
             <div
                v-else
                class="flex flex-col items-center justify-center py-20 text-center"
@@ -238,13 +225,12 @@ function renderFile(key: string) {
                />
             </div>
          </section>
-
          <section
             class="text-inverted dark:text-default rounded-3xl bg-neutral-900 p-8 md:p-16"
          >
             <div class="mx-auto max-w-2xl text-center">
                <h2 class="mb-4 text-3xl font-bold">Join Our Newsletter</h2>
-               <p class="text-muted mb-8 text-lg">
+               <p class="text-dimmed dark:text-muted mb-8 text-lg">
                   Subscribe to get special offers, free giveaways, and
                   once-in-a-lifetime deals.
                </p>
@@ -259,15 +245,15 @@ function renderFile(key: string) {
                   />
                   <UButton
                      size="xl"
-                     color="primary"
+                     color="white"
                      label="Subscribe"
                   />
                </UForm>
-               <p class="mt-4 text-xs text-muted">
+               <p class="text-dimmed dark:text-muted mt-4 text-xs">
                   We care about your data. Read our
                   <NuxtLink
                      to="/privacy"
-                     class="underline hover:text-muted"
+                     class="hover:text-inverted dark:hover:text-primary underline"
                      >Privacy Policy</NuxtLink
                   >.
                </p>

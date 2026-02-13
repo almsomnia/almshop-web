@@ -46,5 +46,18 @@ export default defineAppConfig({
             root: "w-full",
          },
       },
+      button: {
+         variants: {
+            color: {
+               white: '',
+            }
+         },
+         compoundVariants: [
+            {
+               color: 'white',
+               class: 'text-default dark:text-inverted bg-default dark:bg-primary hover:bg-default/75 dark:hover:bg-inverted/75 active:bg-default/75 dark:active:bg-inverted/75 disabled:bg-inverted disabled:hover:bg-inverted aria-disabled:bg-inverted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-default dark:focus-visible:outline-inverted'
+            }
+         ]
+      }
    },
 })
