@@ -17,6 +17,12 @@ export default defineNuxtConfig({
       "/admin/**": { appLayout: "admin", ssr: false },
    },
 
+   runtimeConfig: {
+      public: {
+         storageUrl: import.meta.env.STORAGE_URL
+      }
+   },
+
    // all paths are relative from ./nuxt
    typescript: {
       tsConfig: { ...typeDeclarationTsConfig },
