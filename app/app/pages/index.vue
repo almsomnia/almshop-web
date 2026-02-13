@@ -25,10 +25,6 @@ function refresh() {
 }
 
 const heroImages = ["/img/hero-1.jpg", "/img/hero-2.jpg", "/img/hero-3.jpg"]
-
-function renderFile(key: string) {
-   return `http://localhost:9001/${key}`
-}
 </script>
 
 <template>
@@ -156,7 +152,7 @@ function renderFile(key: string) {
                         >
                            <img
                               v-if="product.files?.length"
-                              :src="renderFile(product.files[0]!.key)"
+                              :src="$resolveStorageUrl(product.files[0]!.key)"
                               :alt="product.name"
                               class="h-full w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-110"
                            />

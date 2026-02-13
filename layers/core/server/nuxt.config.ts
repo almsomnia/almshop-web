@@ -9,6 +9,9 @@ export default defineNuxtConfig({
    devtools: { enabled: true },
    runtimeConfig: {
       apiUrl: import.meta.env.API_URL,
+      public: {
+         storageUrl: import.meta.env.STORAGE_URL
+      }
    },
 
    // all paths are relative from ./server

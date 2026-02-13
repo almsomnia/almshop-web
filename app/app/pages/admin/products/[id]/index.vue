@@ -13,10 +13,6 @@ function onFileSelect(index: number) {
    currentFileIndex.value = index
 }
 
-function renderFile(key: string) {
-   return `http://localhost:9000/almshop/${key}`
-}
-
 const galleryContainer = useTemplateRef("galleryContainer")
 
 const { y, arrivedState } = useScroll(galleryContainer, {
@@ -92,7 +88,7 @@ function scrollDown() {
                      class="h-auto w-full shrink-0"
                   >
                      <img
-                        :src="renderFile(file.key)"
+                        :src="$resolveStorageUrl(file.key)"
                         class="aspect-square h-auto w-full cursor-pointer rounded-xl object-cover transition-opacity"
                         :class="[
                            currentFileIndex == index
@@ -122,7 +118,7 @@ function scrollDown() {
                   mode="out-in"
                >
                   <img
-                     :src="renderFile(files[currentFileIndex]!.key)"
+                     :src="$resolveStorageUrl(files[currentFileIndex]!.key)"
                      :key="files[currentFileIndex]?.id"
                      class="aspect-square h-auto w-full rounded-xl object-cover"
                   />
