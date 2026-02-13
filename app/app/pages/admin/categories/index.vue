@@ -58,7 +58,7 @@ watchDebounced(
 
 const columns: TableColumn<CategoryData>[] = [
    {
-      header: "#",
+      header: "Name",
       cell: ({ row }) => {
          return h(
             "div",
