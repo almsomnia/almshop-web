@@ -20,7 +20,7 @@ export default function () {
          if (!resolved.name && resolved.matched.length === 0) continue
 
          breadcrumbs.unshift({
-            label: (resolved.meta.pageName as string) ?? segments[i - 1],
+            label: resolved.meta.pageName ?? segments[i - 1],
             to: path,
          })
       }
