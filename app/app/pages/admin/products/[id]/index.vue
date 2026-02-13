@@ -148,18 +148,23 @@ function scrollDown() {
             <div class="text-muted text-sm font-medium tracking-wide uppercase">
                {{ data.category?.name }}
             </div>
-            <h2 class="mt-1 text-3xl font-semibold">
+            <h2 class="text-3xl font-semibold">
                {{ data.name }}
             </h2>
             <div class="mt-2 flex items-center gap-2">
-               <span>{{ $formatCurrency(data.price) }}</span>
+               <span class="text-lg">{{ $formatCurrency(data.price) }}</span>
                <USeparator
                   orientation="vertical"
                   :ui="{ root: 'h-4' }"
                />
-               <span>{{ data.stock }} in stock</span>
+                <UBadge
+                  icon="lucide:package"
+                  :label="data.stock"
+                  color="neutral"
+                  variant="soft"
+                />
             </div>
-            <p class="text-muted mt-4 text-sm text-pretty">
+            <p class="text-muted mt-4 text-pretty">
                {{ data.description }}
             </p>
          </div>
