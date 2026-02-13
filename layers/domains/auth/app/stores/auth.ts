@@ -13,10 +13,11 @@ export const useAuthStore = defineStore(
       }
 
       async function logout() {
-         await $api(`/api/logout`, {
+         const response = await $api(`/api/logout`, {
             method: "post",
          })
          user.value = undefined
+         return response
       }
 
       function $reset() {

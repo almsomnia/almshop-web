@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui"
+import type { NuxtError } from "#app"
+import type { NavigationMenuItem, DropdownMenuItem } from "@nuxt/ui"
 
 const appConfig = useAppConfig()
 
@@ -20,7 +21,41 @@ const items: NavigationMenuItem[][] = [
    }),
 ]
 
+const appStore = useAppStore()
 const authStore = useAuthStore()
+const userMenuItems: DropdownMenuItem[][] = [
+   [
+      {
+         label: "Profile",
+         icon: "lucide:user",
+      },
+      {
+         type: "separator",
+      },
+      {
+         label: "Logout",
+         icon: "lucide:log-out",
+         color: "error",
+         onSelect: async () => {
+            try {
+               const response = await authStore.logout()
+               appStore.notify({
+                  title: "Info",
+                  description: response.meta.message,
+               })
+               await navigateTo("/")
+            } catch (error) {
+               const err = error as NuxtError
+               appStore.notify({
+                  title: err.statusMessage,
+                  description: err.message,
+                  color: "error",
+               })
+            }
+         },
+      },
+   ],
+]
 </script>
 
 <template>
@@ -55,13 +90,28 @@ const authStore = useAuthStore()
             />
          </template>
          <template #footer="{ collapsed }">
-            <UUser
-               :name="collapsed ? undefined : authStore.user?.name"
-               :description="collapsed ? undefined : authStore.user?.email"
-               :avatar="{
-                  text: authStore.user?.name.charAt(0),
-               }"
-            />
+            <UDropdownMenu :items="userMenuItems">
+               <div
+                  class="flex w-full cursor-pointer items-center justify-between rounded-lg transition"
+                  :class="{
+                     'hover:bg-elevated px-2.5 py-2': !collapsed,
+                  }"
+               >
+                  <UUser
+                     :name="collapsed ? undefined : authStore.user?.name"
+                     :description="
+                        collapsed ? undefined : authStore.user?.email
+                     "
+                     :avatar="{
+                        text: authStore.user?.name.charAt(0),
+                     }"
+                  />
+                  <UIcon
+                     v-show="!collapsed"
+                     name="lucide:chevron-down"
+                  />
+               </div>
+            </UDropdownMenu>
          </template>
       </UDashboardSidebar>
       <UDashboardPanel id="almshop-db-panel">
