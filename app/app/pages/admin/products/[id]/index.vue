@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { NuxtError } from "#app"
 import type { DropdownMenuItem } from "#ui/types"
 
 definePageMeta({
@@ -6,8 +7,9 @@ definePageMeta({
    hideOnSidebar: true,
 })
 
+const appStore = useAppStore()
 const route = useRoute()
-const { data, pending } = useApi(`/api/products/${route.params.id}`, {
+const { data, pending, refresh } = useApi(`/api/products/${route.params.id}`, {
    key: `product-${route.params.id}`,
    method: "get",
    transform: (res) => res.data,
@@ -46,11 +48,92 @@ function scrollDown() {
    y.value += scrollStep * 3
 }
 
+const formLoading = shallowRef(false)
+
 const menuItems: DropdownMenuItem[][] = [
    [
       {
          label: "Edit",
          icon: "lucide:edit",
+      },
+      {
+         label: "Manage Files",
+         icon: "lucide:files",
+         onSelect: () => {
+            appStore.showDialog(
+               "Manage Product Files",
+               h(resolveComponent("FormProductFileManage"), {
+                  data: files.value,
+                  loading: formLoading,
+                  "onSubmit:update": async (
+                     values: InferSchema<typeof $productSchema, "files">
+                  ) => {
+                     try {
+                        formLoading.value = true
+                        const formData = new FormData()
+                        values.files.forEach((file) => {
+                           formData.append("files", file)
+                        })
+                        const response = await $api<API.Response<DTO.File[]>>(
+                           `/api/products/${route.params.id}/files`,
+                           {
+                              method: "post",
+                              body: formData,
+                           }
+                        )
+
+                        appStore.notify({
+                           title: "Success",
+                           description: response.meta.message,
+                        })
+
+                        appStore.closeDialog()
+                        refresh()
+                     } catch (error) {
+                        const err = error as NuxtError
+                        appStore.notify({
+                           title: err.statusMessage,
+                           description: err.message,
+                           color: "error",
+                        })
+                     } finally {
+                        formLoading.value = false
+                     }
+                  },
+                  "onSubmit:delete": async (ids: number[]) => {
+                     try {
+                        formLoading.value = true
+                        const response = await $api<API.Response<DTO.File[]>>(
+                           `/api/products/${route.params.id}/files`,
+                           {
+                              method: "delete",
+                              body: {
+                                 fileIds: ids,
+                              },
+                           }
+                        )
+
+                        appStore.notify({
+                           title: "Success",
+                           description: response.meta.message,
+                        })
+
+                        appStore.closeDialog()
+                        refresh()
+                     } catch (error) {
+                        const err = error as NuxtError
+                        appStore.notify({
+                           title: err.statusMessage,
+                           description: err.message,
+                           color: "error",
+                        })
+                     } finally {
+                        formLoading.value = false
+                     }
+                  },
+               })
+            )
+         },
       },
       {
          type: "separator",
