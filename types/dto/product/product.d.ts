@@ -8,6 +8,7 @@ declare namespace DTO {
       categoryId: number | null
       category: DTO.Category | null
       files: DTO.File[]
+      thumbnail: DTO.File | null
       createdAt: string
       updatedAt: string
    }

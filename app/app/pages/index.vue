@@ -98,11 +98,11 @@ const heroImages = ["/img/hero-1.jpg", "/img/hero-2.jpg", "/img/hero-3.jpg"]
                   class="group hover:border-primary border-muted flex flex-col items-center gap-3 rounded-xl border p-4 transition-all"
                >
                   <div
-                     class="bg-elevated flex size-16 items-center justify-center rounded-full"
+                     class="bg-elevated flex size-12 items-center justify-center rounded-full"
                   >
                      <UIcon
                         name="lucide:tag"
-                        class="text-muted size-8"
+                        class="text-muted size-6"
                      />
                   </div>
                   <span class="text-default font-medium">
@@ -149,10 +149,10 @@ const heroImages = ["/img/hero-1.jpg", "/img/hero-2.jpg", "/img/hero-3.jpg"]
                            class="bg-elevated dark:bg-muted relative aspect-square overflow-hidden rounded-lg"
                         >
                            <img
-                              v-if="product.files?.length"
-                              :src="$resolveStorageUrl(product.files[0]!.key)"
+                              v-if="product.thumbnail"
+                              :src="$resolveStorageUrl(product.thumbnail.key)"
                               :alt="product.name"
-                              class="h-full w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-110"
+                              class="h-full w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-103"
                            />
                            <div
                               v-else
