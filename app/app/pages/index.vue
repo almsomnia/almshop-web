@@ -137,65 +137,9 @@ const heroImages = ["/img/hero-1.jpg", "/img/hero-2.jpg", "/img/hero-3.jpg"]
                   :to="`/products/${product.id}`"
                   class="block"
                >
-                  <UCard
-                     :ui="{
-                        root: 'divide-y-0 ring-0 group overflow-hidden transition-all hover:shadow-md dark:hover:ring rounded-xl',
-                        header: 'p-2 sm:p-2',
-                        body: 'p-0 sm:p-0',
-                     }"
-                  >
-                     <template #header>
-                        <div
-                           class="bg-elevated dark:bg-muted relative aspect-square overflow-hidden rounded-lg"
-                        >
-                           <img
-                              v-if="product.thumbnail"
-                              :src="$resolveStorageUrl(product.thumbnail.key)"
-                              :alt="product.name"
-                              class="h-full w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-103"
-                           />
-                           <div
-                              v-else
-                              class="flex h-full w-full items-center justify-center rounded-xl"
-                           >
-                              <UIcon
-                                 name="lucide:image"
-                                 class="text-muted h-12 w-12"
-                              />
-                           </div>
-                           <div
-                              class="absolute top-2 right-2"
-                              @click.stop.prevent
-                           >
-                              <UButton
-                                 color="neutral"
-                                 variant="ghost"
-                                 icon="lucide:heart"
-                                 class="bg-default rounded-full backdrop-blur-sm"
-                              />
-                           </div>
-                        </div>
-                     </template>
-                     <div class="p-4">
-                        <div class="text-muted text-xs">
-                           {{ product.category?.name ?? "Uncategorized" }}
-                        </div>
-                        <h3 class="text-default line-clamp-1 font-medium">
-                           {{ product.name }}
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between">
-                           <span class="text-primary text-lg font-bold">
-                              {{ $formatCurrency(product.price) }}
-                           </span>
-                           <UBadge
-                              :label="product.stock"
-                              icon="lucide:package"
-                              variant="soft"
-                              color="neutral"
-                           />
-                        </div>
-                     </div>
-                  </UCard>
+                  <ProductCard
+                     :data="product"
+                  />
                </NuxtLink>
             </div>
             <div

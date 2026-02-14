@@ -13,5 +13,8 @@
     "tailwindcss": "^4.1.18",
     "vue": "catalog:core",
     "vue-router": "catalog:core"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "^1.2.90"
   }
 }
