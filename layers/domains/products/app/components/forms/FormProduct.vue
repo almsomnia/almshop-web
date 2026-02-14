@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from "@nuxt/ui"
+import type { FormSubmitEvent, StepperItem } from "#ui/types"
+import FormProductGeneral from "./FormProductGeneral.vue"
+import FormProductFile from "./FormProductFile.vue"
+
+type CategorySelectorProps = {
+   modelValue: number | null | undefined
+   "onUpdate:modelValue": (value: number | null | undefined) => void
+}
 
 const props = withDefaults(
    defineProps<{
@@ -12,118 +19,104 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-   submit: [data: InferSchema<typeof $productSchema, "create">]
+   "submit:general": [data: InferSchema<typeof $productSchema, "create">]
+   "submit:files": [data: InferSchema<typeof $productSchema, "files">]
 }>()
 
-const schema = $productSchema().create
-const state = reactive<Partial<InferFlatSchema<typeof schema>>>({
-   name: undefined,
-   description: undefined,
-   categoryId: undefined,
-   price: undefined,
-   stock: undefined,
-})
+const slots = defineSlots<{
+   "category-selector"(slotProps: CategorySelectorProps): any
+}>()
 
-const loading = computed(() => props.loading.value)
+const currentStep = shallowRef(0)
+const stepperItem = computed<StepperItem[]>(() => [
+   {
+      value: 0,
+      title: "General Information",
+      content: "",
+      description: "Basic product details",
+      icon: "lucide:info",
+      component: h(
+         FormProductGeneral,
+         {
+            loading: props.loading,
+            data: props.data,
+            onSubmit: (
+               values: InferSchema<typeof $productSchema, "create">
+            ) => {
+               emit("submit:general", values)
+            },
+         },
+         {
+            "category-selector": (slotProps: CategorySelectorProps) =>
+               slots["category-selector"]?.({
+                  modelValue: slotProps.modelValue,
+                  "onUpdate:modelValue": slotProps["onUpdate:modelValue"],
+               }),
+            actions: h(resolveComponent("UButton"), {
+               class: "ms-auto",
+               type: "submit",
+               label: "Next",
+               trailingIcon: "lucide:arrow-right",
+            }),
+         }
+      ),
+   },
+   {
+      value: 1,
+      title: "Product Images",
+      description: "Product images",
+      icon: "lucide:image",
+      disabled: !props.data,
+      component: h(
+         FormProductFile,
+         {
+            productId: props.data?.id ?? 0,
+            loading: props.loading,
+            onSubmit: (values: InferSchema<typeof $productSchema, "files">) => {
+               emit("submit:files", values)
+            },
+         },
+         {
+            actions: [
+               h(resolveComponent("UButton"), {
+                  label: "Previous",
+                  leadingIcon: "lucide:arrow-left",
+                  variant: "soft",
+                  color: "neutral",
+                  onClick: () => currentStep.value--,
+               }),
+               h(resolveComponent("UButton"), {
+                  label: "Submit",
+                  type: "submit",
+                  icon: "lucide:check",
+                  class: "ms-auto",
+               }),
+            ],
+         }
+      ),
+   },
+])
 
-function onSubmit(e: FormSubmitEvent<InferFlatSchema<typeof schema>>) {
-   emit("submit", e.data)
-}
-
-onMounted(() => {
-   if (props.data) {
-      state.name = props.data.name
-      state.description = props.data.description
-      state.categoryId = props.data.categoryId
-      state.price = props.data.price
-      state.stock = props.data.stock
-   }
+defineExpose({
+   currentStep: currentStep.value,
+   next: () => currentStep.value++,
+   prev: () => currentStep.value--,
+   setCurrentStep: (step: number) => (currentStep.value = step),
+   minStep: 0,
+   maxStep: stepperItem.value.length - 1,
 })
 </script>
 
 <template>
-   <UForm
-      :schema="schema"
-      :state="state"
-      @submit="onSubmit"
-      class="grid grid-cols-2 gap-4"
+   <UStepper
+      linear
+      :items="stepperItem"
+      v-model="currentStep"
    >
-      <UFormField
-         name="name"
-         label="Name"
-         required
-      >
-         <UInput
-            v-model="state.name"
-            maxlength="255"
-            placeholder="min 3 characters"
-            :loading="loading"
-         />
-      </UFormField>
-      <UFormField
-         name="categoryId"
-         label="Category"
-      >
-         <slot
-            name="category-selector"
-            :model-value="state.categoryId"
-            :on-update:model-value="
-               (val: typeof state.categoryId) => (state.categoryId = val)
-            "
-            :loading="loading"
-         />
-      </UFormField>
-      <UFormField
-         name="description"
-         label="Description"
-         class="col-span-full"
-      >
-         <UTextarea
-            v-model="state.description"
-            autoresize
-            :rows="2"
-            :loading="loading"
-         />
-      </UFormField>
-      <UFormField
-         name="price"
-         label="Price"
-         required
-      >
-         <UFieldGroup class="w-full">
-            <UBadge
-               variant="subtle"
-               color="neutral"
-               label="Rp"
-            />
-            <UInputNumber
-               v-model="state.price"
-               :min="0"
-               :decrement="false"
-               :increment="false"
-            />
-         </UFieldGroup>
-      </UFormField>
-      <UFormField
-         name="stock"
-         label="Stock"
-         required
-      >
-         <UInputNumber
-            v-model="state.stock"
-            :min="0"
-            :decrement="false"
-            :increment="false"
-         />
-      </UFormField>
-      <div class="col-span-full mt-2 flex items-center">
-         <UButton
-            type="submit"
-            label="Submit"
-            icon="lucide:check"
-            class="ms-auto"
-            :loading="loading"
-         />
-      </div>
-   </UForm>
+      <template #content="{ item }">
+         <UContainer>
+            <component :is="item.component" />
+         </UContainer>
+      </template>
+   </UStepper>
 </template>

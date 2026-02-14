@@ -51,13 +51,15 @@ async function onSubmit(
       </UFormField>
 
       <div class="flex items-center">
-         <UButton
-            type="submit"
-            label="Upload Files"
-            icon="lucide:upload"
-            class="ms-auto"
-            :loading="loading"
-         />
+         <slot name="actions">
+            <UButton
+               type="submit"
+               label="Upload Files"
+               icon="lucide:upload"
+               class="ms-auto"
+               :loading="loading"
+            />
+         </slot>
       </div>
    </UForm>
 </template>

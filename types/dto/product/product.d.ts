@@ -7,7 +7,7 @@ declare namespace DTO {
       stock: number
       categoryId: number | null
       category: DTO.Category | null
-      files?: DTO.File[] | null
+      files: DTO.File[]
       createdAt: string
       updatedAt: string
    }

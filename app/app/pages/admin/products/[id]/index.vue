@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { DropdownMenuItem } from "#ui/types"
+
 definePageMeta({
    pageName: "Product Detail",
-   hideOnSidebar: true
+   hideOnSidebar: true,
 })
 
 const route = useRoute()
@@ -43,6 +45,23 @@ function scrollDown() {
    const scrollStep = itemHeight + 16
    y.value += scrollStep * 3
 }
+
+const menuItems: DropdownMenuItem[][] = [
+   [
+      {
+         label: "Edit",
+         icon: "lucide:edit",
+      },
+      {
+         type: "separator",
+      },
+      {
+         label: "Delete",
+         icon: "lucide:trash",
+         color: "error",
+      },
+   ],
+]
 </script>
 
 <template>
@@ -150,8 +169,21 @@ function scrollDown() {
       </div>
       <div class="w-[45%]">
          <div v-if="data">
-            <div class="text-muted text-sm font-medium tracking-wide uppercase">
-               {{ data.category?.name }}
+            <div class="flex items-center">
+               <span
+                  class="text-muted truncate text-sm font-medium tracking-wide uppercase"
+               >
+                  {{ data.category?.name }}
+               </span>
+               <UDropdownMenu :items="menuItems">
+                  <UButton
+                     icon="lucide:ellipsis-vertical"
+                     size="sm"
+                     variant="ghost"
+                     square
+                     class="ms-auto"
+                  />
+               </UDropdownMenu>
             </div>
             <h2 class="text-3xl font-semibold">
                {{ data.name }}

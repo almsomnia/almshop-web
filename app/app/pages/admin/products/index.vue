@@ -224,7 +224,7 @@ function openForm(data?: DTO.Product) {
    appStore.showDialog(
       data ? "Edit Product" : "New Product",
       h(
-         resolveComponent("FormProduct"),
+         resolveComponent("FormProductGeneral"),
          {
             loading: formLoading,
             data,
@@ -317,7 +317,7 @@ function openForm(data?: DTO.Product) {
                   label="New Product"
                   icon="lucide:plus"
                   class="ms-auto"
-                  @click="() => openForm()"
+                  @click="navigateTo(`/admin/products/create`)"
                />
             </div>
          </template>
