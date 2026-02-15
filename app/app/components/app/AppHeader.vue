@@ -1,9 +1,7 @@
 <script setup lang="ts">
+import type { NavigationMenuItem } from "#ui/types"
 import { breakpointsTailwind } from "@vueuse/core"
-import { FormLogin } from "#components"
-import type { NuxtError } from "#app"
 
-const appStore = useAppStore()
 const authStore = useAuthStore()
 const appConfig = useAppConfig()
 const appTitle = computed<string>(() => (appConfig.app as any).title)
@@ -16,25 +14,20 @@ const largerThanMd = computed(() => {
    return breakpoints.greater("md").value
 })
 
-function openLoginDialog() {
-   appStore.showDialog(
-      "Login",
-      h(FormLogin, {
-         onSubmit: async (data: InferSchema<typeof $authSchema, "login">) => {
-            try {
-               await authStore.login(data)
-               window.location.reload()
-            } catch (error) {
-               const err = error as NuxtError<any>
-               appStore.notify({
-                  title: err?.statusMessage,
-                  description: err?.message,
-               })
-            }
-         },
-      })
-   )
-}
+const menuItems: NavigationMenuItem[] = [
+   {
+      label: "Shop All",
+      to: "/products",
+   },
+   {
+      label: "Categories",
+      to: "/categories",
+   },
+   {
+      label: "About",
+      to: "/about",
+   },
+]
 
 onMounted(() => {
    isMounted.value = true
@@ -42,7 +35,12 @@ onMounted(() => {
 </script>
 
 <template>
-   <UHeader :title="appTitle">
+   <UHeader
+      :title="appTitle"
+      :ui="{
+         title: 'uppercase tracking-widest font-medium',
+      }"
+   >
       <template #right>
          <ClientOnly>
             <template v-if="largerThanMd">
@@ -53,7 +51,7 @@ onMounted(() => {
                      icon="lucide:log-in"
                      variant="outline"
                      color="neutral"
-                     @click="openLoginDialog"
+                     @click="navigateTo(`/login`)"
                   />
                   <UButton
                      label="Register"
@@ -69,5 +67,9 @@ onMounted(() => {
             </template>
          </ClientOnly>
       </template>
+      <UNavigationMenu
+         :items="menuItems"
+         variant="link"
+      />
    </UHeader>
 </template>

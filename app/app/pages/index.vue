@@ -163,40 +163,6 @@ const heroImages = ["/img/hero-1.jpg", "/img/hero-2.jpg", "/img/hero-3.jpg"]
                />
             </div>
          </section>
-         <section
-            class="text-inverted dark:text-default rounded-3xl bg-neutral-900 p-8 md:p-16"
-         >
-            <div class="mx-auto max-w-2xl text-center">
-               <h2 class="mb-4 text-3xl font-bold">Join Our Newsletter</h2>
-               <p class="text-dimmed dark:text-muted mb-8 text-lg">
-                  Subscribe to get special offers, free giveaways, and
-                  once-in-a-lifetime deals.
-               </p>
-               <UForm
-                  @submit=""
-                  class="flex flex-col gap-4 sm:flex-row"
-               >
-                  <UInput
-                     placeholder="Enter your email"
-                     size="xl"
-                     color="neutral"
-                  />
-                  <UButton
-                     size="xl"
-                     color="white"
-                     label="Subscribe"
-                  />
-               </UForm>
-               <p class="text-dimmed dark:text-muted mt-4 text-xs">
-                  We care about your data. Read our
-                  <NuxtLink
-                     to="/privacy"
-                     class="hover:text-inverted dark:hover:text-primary underline"
-                     >Privacy Policy</NuxtLink
-                  >.
-               </p>
-            </div>
-         </section>
       </UContainer>
    </div>
 </template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const currentDate = Date.now()
-const { items } = useBreadcrumb()
 </script>
 
 <template>

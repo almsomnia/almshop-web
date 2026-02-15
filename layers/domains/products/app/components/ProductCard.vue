@@ -7,7 +7,7 @@ const props = defineProps<{
 <template>
    <UCard
       :ui="{
-         root: 'divide-y-0 ring-0 group overflow-hidden transition-all hover:shadow-md dark:hover:ring rounded-xl',
+         root: 'divide-y-0 ring-0 group overflow-hidden transition-all rounded-xl',
          header: 'p-2 sm:p-2',
          body: 'p-0 sm:p-0'
       }"
@@ -22,11 +22,11 @@ const props = defineProps<{
             />
             <div
                v-else
-               class="flex h-full w-full items-center justify-center rounded-xl"
+               class="group flex h-full w-full items-center justify-center rounded-xl"
             >
                <UIcon
                   name="lucide:image"
-                  class="text-muted size-12"
+                  class="text-muted size-12 group-hover:scale-105 transition"
                />
             </div>
             <div class="absolute top-2 right-2" @click.stop.prevent>
