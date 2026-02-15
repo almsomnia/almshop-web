@@ -49,7 +49,9 @@ const breadcrumbItems: BreadcrumbItem[] = [
             <UBreadcrumb :items="breadcrumbItems" />
          </template>
       </UPageHeader>
-      <div class="mt-4 grid grid-cols-4 gap-2">
+      <div
+         class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+      >
          <NuxtLink
             v-for="item in data?.items"
             :key="item.id"
