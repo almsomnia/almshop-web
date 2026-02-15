@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BreadcrumbItem } from "#ui/types"
+
 definePageMeta({
    pageName: "Shop All",
 })
@@ -24,11 +26,30 @@ function onToggleWishlist(id: number) {
       title: `Product ${message} to wishlist`,
    })
 }
+
+const breadcrumbItems: BreadcrumbItem[] = [
+   {
+      label: "Home",
+      to: "/"
+   },
+   {
+      label: "Products",
+      to: "/products"
+   }
+]
 </script>
 
 <template>
    <div>
-      <div class="grid grid-cols-4 gap-2">
+      <UPageHeader
+         title="Products"
+         description="Browse our collection of high-quality products and find everything you need."
+      >
+         <template #headline>
+            <UBreadcrumb :items="breadcrumbItems" />
+         </template>
+      </UPageHeader>
+      <div class="grid grid-cols-4 gap-2 mt-4">
          <NuxtLink
             v-for="item in data?.items"
             :key="item.id"

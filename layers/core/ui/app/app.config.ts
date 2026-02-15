@@ -12,6 +12,19 @@ export default defineAppConfig({
       main: {
          base: "p-4 sm:px-6 lg:px-8",
       },
+      pageHeader: {
+         slots: {
+            root: "border-b-0",
+            headline: "mb-2.5",
+         },
+         variants: {
+            title: {
+               true: {
+                  description: "mt-2"
+               }
+            }
+         }
+      },
       modal: {
          variants: {
             fullscreen: {

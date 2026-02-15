@@ -14,12 +14,14 @@ const query = reactive<API.Query>({
 
 // Fetch category details
 const { data: category } = await useApi(`/api/categories/${categoryId.value}`, {
+   key: `category-${categoryId.value}`,
    method: "get",
    transform: (res) => res.data,
 })
 
 // Fetch products for this category
 const { data: products, pending } = await useApi(`/api/products`, {
+   key: `products-category-${categoryId.value}`,
    method: "get",
    query,
    transform: (res) => res.data,
@@ -41,10 +43,16 @@ definePageMeta({
 const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
    if (!category.value) return []
    const items: BreadcrumbItem[] = []
-   items.push({
-      label: "All Categories",
-      to: "/categories",
-   })
+   items.push(
+      {
+         label: "Home",
+         to: "/",
+      },
+      {
+         label: "All Categories",
+         to: "/categories",
+      }
+   )
    if (category.value.parent) {
       items.push({
          label: category.value.parent.name,
@@ -60,40 +68,42 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
 </script>
 
 <template>
-   <UContainer class="py-8">
-      <div class="mb-8">
-         <UPageHeader
-            v-if="category"
-            :title="category.name"
-         >
-            <template #headline>
-               <UBreadcrumb :items="breadcrumbItems" />
-            </template>
-            <template #description>
+   <div>
+      <UPageHeader
+         v-if="category"
+         :title="category.name"
+      >
+         <template #headline>
+            <UBreadcrumb :items="breadcrumbItems" />
+         </template>
+         <template #description>
+            <div
+               v-if="category.children?.length"
+               class="flex items-baseline"
+            >
+               <span class="text-muted text-sm font-medium"
+                  >Subcategories: &nbsp;</span
+               >
                <div class="divide-muted flex items-center divide-x">
-                  <div
+                  <NuxtLink
                      v-for="child in category.children"
                      :key="`${category.id}-${child.id}`"
-                     class="px-2 first:ps-0 last:pe-0"
+                     :to="`/categories/${child.id}`"
+                     class="text-muted hover:text-primary px-2 text-sm first:ps-0 last:pe-0 hover:underline"
                   >
-                     <NuxtLink
-                        :to="`/categories/${child.id}`"
-                        class="text-muted hover:text-primary text-sm hover:underline"
-                     >
-                        {{ child.name }}
-                     </NuxtLink>
-                  </div>
+                     {{ child.name }}
+                  </NuxtLink>
                </div>
-            </template>
-         </UPageHeader>
-         <USkeleton
-            v-else
-            class="h-10 w-48"
-         />
-      </div>
+            </div>
+         </template>
+      </UPageHeader>
+      <USkeleton
+         v-else
+         class="h-10 w-48"
+      />
       <div
          v-if="pending"
-         class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+         class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
       >
          <div
             v-for="n in 8"
@@ -159,5 +169,5 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
             />
          </div>
       </template>
-   </UContainer>
+   </div>
 </template>
