@@ -23,23 +23,7 @@ const { data, pending, refresh } = useApi(`/api/categories`, {
    query,
    transform: (res) => {
       const { items } = res.data
-      const map = new Map<number, CategoryData>()
-      const roots: CategoryData[] = []
-
-      for (const item of items) {
-         map.set(item.id, { ...item, children: [] })
-      }
-
-      for (const item of items) {
-         const node = map.get(item.id)!
-         if (item.parentId && map.has(item.parentId)) {
-            map.get(item.parentId)!.children.push(node)
-         } else {
-            roots.push(node)
-         }
-      }
-
-      return roots
+      return $groupCategoriesByParent(items)
    },
    watch: false,
 })
