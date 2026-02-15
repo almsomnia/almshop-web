@@ -76,23 +76,21 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
             <UBreadcrumb :items="breadcrumbItems" />
          </template>
       </UPageHeader>
-      <div class="flex gap-16">
-         <div class="flex w-[55%] gap-4">
+      <div class="flex flex-col gap-8 lg:flex-row lg:gap-16">
+         <!-- Gallery Section -->
+         <div class="flex w-full flex-col-reverse gap-2 md:flex-row lg:w-[55%]">
             <template v-if="pending">
-               <div class="relative w-18 shrink-0">
+               <div
+                  class="relative flex flex-row gap-4 overflow-x-auto md:w-18 md:shrink-0 md:flex-col md:overflow-y-auto"
+               >
                   <div
-                     ref="galleryContainer"
-                     class="scrollbar-hidden absolute inset-0 flex flex-col gap-4 overflow-y-auto"
+                     v-for="n in 6"
+                     :key="n"
+                     class="h-18 w-18 shrink-0 md:h-auto md:w-full"
                   >
-                     <div
-                        v-for="n in 6"
-                        :key="n"
-                        class="h-auto w-full shrink-0"
-                     >
-                        <USkeleton
-                           class="aspect-square h-auto w-full rounded-xl"
-                        />
-                     </div>
+                     <USkeleton
+                        class="aspect-square h-auto w-full rounded-xl"
+                     />
                   </div>
                </div>
                <div class="flex-1">
@@ -100,10 +98,12 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
                </div>
             </template>
             <template v-else-if="files.length > 0">
-               <div class="relative w-18 shrink-0">
+               <!-- Thumbnail List -->
+               <div class="relative md:w-18 md:shrink-0">
+                  <!-- Up/Down buttons only visible on MD+ where it's vertical -->
                   <div
                      v-show="showUpButton"
-                     class="absolute inset-x-0 top-0 z-20 flex -translate-y-1/2 justify-center"
+                     class="absolute inset-x-0 top-0 z-20 hidden -translate-y-1/2 justify-center md:flex"
                   >
                      <UButton
                         icon="lucide:arrow-up"
@@ -113,30 +113,32 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
                         @click="scrollUp"
                      />
                   </div>
+
                   <div
                      ref="galleryContainer"
-                     class="scrollbar-hidden absolute inset-0 flex flex-col gap-4 overflow-y-auto"
+                     class="scrollbar-hidden -mx-0.5 flex flex-row gap-2 overflow-x-auto p-0.5 md:absolute md:inset-0 md:flex-col md:overflow-y-auto"
                   >
                      <div
                         v-for="(file, index) in files"
                         :key="file.id"
-                        class="h-auto w-full shrink-0"
+                        class="h-18 w-18 shrink-0 md:h-auto md:w-full"
                      >
                         <img
                            :src="$resolveStorageUrl(file.key)"
                            class="aspect-square h-auto w-full cursor-pointer rounded-xl object-cover transition-opacity"
                            :class="[
                               currentFileIndex == index
-                                 ? 'opacity-100'
-                                 : 'opacity-25 hover:opacity-75',
+                                 ? 'ring-primary opacity-100 ring-2'
+                                 : 'opacity-50 hover:opacity-75',
                            ]"
                            @click.stop="onFileSelect(index)"
                         />
                      </div>
                   </div>
+
                   <div
                      v-show="showDownButton"
-                     class="absolute inset-x-0 bottom-0 z-20 flex translate-y-1/2 justify-center"
+                     class="absolute inset-x-0 bottom-0 z-20 hidden translate-y-1/2 justify-center md:flex"
                   >
                      <UButton
                         icon="lucide:arrow-down"
@@ -147,6 +149,8 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
                      />
                   </div>
                </div>
+
+               <!-- Main Image -->
                <div class="flex-1">
                   <Transition
                      name="fade"
@@ -155,7 +159,7 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
                      <img
                         :src="$resolveStorageUrl(files[currentFileIndex]!.key)"
                         :key="files[currentFileIndex]?.id"
-                        class="aspect-square h-auto w-full rounded-2xl object-cover"
+                        class="aspect-square h-auto w-full rounded-2xl object-cover shadow-sm"
                      />
                   </Transition>
                </div>
@@ -167,7 +171,7 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
                description="No image available"
                variant="soft"
                :ui="{
-                  root: 'basis-[calc(100%-(var(--spacing)*18))] aspect-square mx-auto rounded-xl',
+                  root: 'w-full aspect-square mx-auto rounded-xl',
                   header: 'max-w-xs w-full',
                }"
             >
@@ -178,61 +182,83 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
                </template>
             </UEmpty>
          </div>
-         <div class="w-[45%]">
+
+         <!-- Info Section -->
+         <div class="w-full lg:w-[45%]">
             <div v-if="data">
                <p
                   class="text-muted truncate text-sm font-medium tracking-wide uppercase"
                >
                   {{ data.category?.name }}
                </p>
-               <h1 class="text-3xl font-semibold">
+               <h1 class="text-highlighted text-3xl font-semibold md:text-4xl">
                   {{ data?.name }}
                </h1>
-               <p class="mt-2 text-xl">
+               <p class="mt-2 text-xl font-bold">
                   {{ $formatCurrency(data?.price) }}
                </p>
-               <div class="mt-4">
-                  <p class="leading-relaxed text-pretty">
+               <div class="mt-6">
+                  <h3
+                     class="text-muted text-sm font-medium tracking-wider uppercase"
+                  >
+                     Description
+                  </h3>
+                  <p class="text-muted mt-2 leading-relaxed text-pretty">
                      {{ data.description }}
                   </p>
                </div>
+
                <UCard
                   variant="soft"
                   :ui="{
-                     root: 'mt-4',
+                     root: 'mt-8',
+                     body: 'p-6',
                   }"
                >
-                  <div class="flex items-center">
-                     <UInputNumber
-                        class="max-w-30"
-                        v-model="cartQty"
-                        :default-value="1"
-                        :step="1"
-                        :min="1"
-                        :max="data.stock"
-                     />
-                     <UTooltip
-                        :text="`Stock: ${data.stock}`"
-                        arrow
-                     >
-                        <UBadge
-                           :label="data.stock"
-                           icon="lucide:package"
-                           class="ms-4"
-                           variant="soft"
+                  <div class="flex items-center gap-4">
+                     <div class="flex flex-col gap-1">
+                        <span class="text-muted text-xs font-medium uppercase"
+                           >Quantity</span
+                        >
+                        <UInputNumber
+                           class="max-w-32"
+                           v-model="cartQty"
+                           :default-value="1"
+                           :step="1"
+                           :min="1"
+                           :max="data.stock"
                         />
-                     </UTooltip>
+                     </div>
+                     <div class="ms-auto text-right">
+                        <span class="text-muted text-xs font-medium uppercase"
+                           >Availability</span
+                        >
+                        <div class="mt-1">
+                           <UBadge
+                              :label="`${data.stock} in stock`"
+                              icon="lucide:package"
+                              variant="soft"
+                              color="neutral"
+                           />
+                        </div>
+                     </div>
                   </div>
-                  <div class="mt-4 flex items-center">
-                     <span class="text-muted font-medium"> Subtotal </span>
-                     <span class="ms-auto text-lg font-semibold">
+                  <USeparator
+                     type="dashed"
+                     class="my-6"
+                  />
+                  <div class="flex items-center">
+                     <span class="text-muted font-medium">Subtotal</span>
+                     <span class="text-primary ms-auto text-2xl font-bold">
                         {{ $formatCurrency(subtotal) }}
                      </span>
                   </div>
-                  <div class="mt-2 flex items-center gap-2">
+                  <div class="mt-8 flex flex-col gap-3 sm:flex-row">
                      <UButton
                         label="Add To Cart"
                         icon="lucide:shopping-cart"
+                        size="lg"
+                        class="flex-1"
                         block
                      />
                      <UTooltip
@@ -240,10 +266,20 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
                         arrow
                      >
                         <UButton
-                           variant="ghost"
+                           variant="outline"
                            color="neutral"
-                           square
+                           size="lg"
                            icon="lucide:heart"
+                           class="hidden sm:inline-flex"
+                        />
+                        <UButton
+                           variant="outline"
+                           color="neutral"
+                           size="lg"
+                           label="Wishlist"
+                           icon="lucide:heart"
+                           class="sm:hidden"
+                           block
                         />
                      </UTooltip>
                   </div>

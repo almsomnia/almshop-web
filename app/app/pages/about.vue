@@ -21,7 +21,9 @@ const stats = [
                size="lg"
                class="mb-4"
             />
-            <h1 class="text-4xl font-bold tracking-tight sm:text-5xl text-highlighted">
+            <h1
+               class="text-highlighted text-4xl font-bold tracking-tight sm:text-5xl"
+            >
                Crafting the Future of Modern E-Commerce
             </h1>
             <p class="text-muted text-lg leading-relaxed text-pretty">
