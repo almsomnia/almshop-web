@@ -82,6 +82,10 @@ const isWishlisted = computed(() => {
    if (!data.value?.id) return false
    return wishlist.value.includes(data.value.id)
 })
+
+function addToCart() {
+
+}
 </script>
 
 <template>
@@ -275,6 +279,7 @@ const isWishlisted = computed(() => {
                         size="lg"
                         class="flex-1"
                         block
+                        @click="addToCart"
                      />
                      <UTooltip
                         :text="

@@ -11,6 +11,7 @@ export default defineNuxtConfig({
       "../layers/domains/products",
       "../layers/domains/categories",
       "../layers/domains/users",
+      "../layers/domains/cart",
    ],
 
    routeRules: {
