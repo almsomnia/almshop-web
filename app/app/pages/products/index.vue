@@ -3,6 +3,8 @@ definePageMeta({
    pageName: "Shop All",
 })
 
+const appStore = useAppStore()
+
 const query = reactive<API.Query>({
    page: 1,
    perPage: 12,
@@ -14,6 +16,14 @@ const { data } = await useApi(`/api/products`, {
    query,
    transform: (res) => res.data,
 })
+
+const { wishlist, toggleWishlist } = useWishlist()
+function onToggleWishlist(id: number) {
+   const message = toggleWishlist(id)
+   appStore.notify({
+      title: `Product ${message} to wishlist`
+   })
+}
 </script>
 
 <template>
@@ -27,6 +37,8 @@ const { data } = await useApi(`/api/products`, {
          >
             <ProductCard
                :data="item"
+               :wishlist="wishlist"
+               @wishlist:toggle="onToggleWishlist"
             />
          </NuxtLink>
       </div>

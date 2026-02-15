@@ -1,6 +1,24 @@
 <script setup lang="ts">
-const props = defineProps<{
-   data: DTO.Product
+const props = withDefaults(
+   defineProps<{
+      data: DTO.Product
+      wishlist?: number[]
+   }>(),
+   {
+      wishlist: () => [],
+   }
+)
+
+const isWishlisted = computed(() => {
+   return props.wishlist.includes(props.data.id)
+})
+
+const wishlistIcon = computed(() => {
+   return isWishlisted.value ? "mdi:heart" : "lucide:heart"
+})
+
+const emit = defineEmits<{
+   "wishlist:toggle": [id: number]
 }>()
 </script>
 
@@ -9,11 +27,13 @@ const props = defineProps<{
       :ui="{
          root: 'divide-y-0 ring-0 group overflow-hidden transition-all rounded-xl',
          header: 'p-2 sm:p-2',
-         body: 'p-0 sm:p-0'
+         body: 'p-0 sm:p-0',
       }"
    >
       <template #header>
-         <div class="bg-elevated dark:bg-muted relative aspect-square overflow-hidden rounded-lg">
+         <div
+            class="bg-elevated dark:bg-muted relative aspect-square overflow-hidden rounded-lg"
+         >
             <img
                v-if="data.thumbnail"
                :src="$resolveStorageUrl(data.thumbnail.key)"
@@ -26,17 +46,23 @@ const props = defineProps<{
             >
                <UIcon
                   name="lucide:image"
-                  class="text-muted size-12 group-hover:scale-105 transition"
+                  class="text-muted size-12 transition group-hover:scale-105"
                />
             </div>
-            <div class="absolute top-2 right-2" @click.stop.prevent>
-               <UButton
-                  color="neutral"
-                  variant="ghost"
-                  icon="lucide:heart"
-                  class="bg-default rounded-full backdrop-blur-sm"
-               />
-            </div>
+            <ClientOnly>
+               <div
+                  class="absolute top-2 right-2"
+                  @click.stop.prevent
+               >
+                  <UButton
+                     color="neutral"
+                     variant="ghost"
+                     :icon="wishlistIcon"
+                     class="bg-default rounded-full backdrop-blur-sm"
+                     @click.stop.prevent="emit('wishlist:toggle', data.id)"
+                  />
+               </div>
+            </ClientOnly>
          </div>
       </template>
       <div class="p-4">

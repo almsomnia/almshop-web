@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const appStore = useAppStore()
+
 const { data: products, refresh: refreshProducts } = await useApi(
    "/api/products",
    {
@@ -25,6 +27,14 @@ function refresh() {
 }
 
 const heroImages = ["/img/hero-1.jpg", "/img/hero-2.jpg", "/img/hero-3.jpg"]
+
+const { wishlist, toggleWishlist } = useWishlist()
+function onToggleWishlist(id: number) {
+   const message = toggleWishlist(id)
+   appStore.notify({
+      title: `Product ${message} to wishlist`
+   })
+}
 </script>
 
 <template>
@@ -139,6 +149,8 @@ const heroImages = ["/img/hero-1.jpg", "/img/hero-2.jpg", "/img/hero-3.jpg"]
                >
                   <ProductCard
                      :data="product"
+                     :wishlist="wishlist"
+                     @wishlist:toggle="onToggleWishlist"
                   />
                </NuxtLink>
             </div>
