@@ -71,5 +71,11 @@ onMounted(() => {
          :items="menuItems"
          variant="link"
       />
+      <template #body>
+         <UNavigationMenu
+            :items="menuItems"
+            orientation="vertical"
+         />
+      </template>
    </UHeader>
 </template>

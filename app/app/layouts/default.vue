@@ -16,7 +16,9 @@ const currentDate = Date.now()
       >
          <template #top>
             <UContainer class="max-w-full">
-               <div class="flex justify-between">
+               <div
+                  class="flex flex-col justify-baseline lg:flex-row lg:justify-between"
+               >
                   <div>
                      <h2 class="text-3xl font-bold">Join Our Newsletter</h2>
                      <p class="text-dimmed dark:text-muted mt-1 text-lg">
@@ -24,14 +26,16 @@ const currentDate = Date.now()
                         once-in-a-lifetime deals.
                      </p>
                   </div>
-                  <div class="self-end-safe">
-                     <UForm>
-                        <UFieldGroup>
+                  <div
+                     class="mt-4 flex w-full justify-end self-end-safe lg:mt-0 lg:w-auto"
+                  >
+                     <UForm class="w-full lg:w-auto">
+                        <UFieldGroup class="w-full">
                            <UInput
                               placeholder="Enter your email"
                               size="lg"
                               color="neutral"
-                              class="w-xs"
+                              class="w-full lg:w-xs"
                            />
                            <UButton
                               label="Subscribe"

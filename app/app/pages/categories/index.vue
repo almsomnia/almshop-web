@@ -15,12 +15,12 @@ const { data: categories, pending } = await useApi("/api/categories", {
 const breadcrumbItems: BreadcrumbItem[] = [
    {
       label: "Home",
-      to: "/"
+      to: "/",
    },
    {
       label: "Categories",
-      to: "/categories"
-   }
+      to: "/categories",
+   },
 ]
 </script>
 
@@ -48,7 +48,9 @@ const breadcrumbItems: BreadcrumbItem[] = [
                   <USkeleton class="h-8 w-48" />
                   <USkeleton class="h-6 w-20" />
                </div>
-               <div class="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+               <div
+                  class="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6"
+               >
                   <USkeleton
                      v-for="i in 6"
                      :key="i"
@@ -120,8 +122,8 @@ const breadcrumbItems: BreadcrumbItem[] = [
             :actions="[
                {
                   label: 'Browse All Products',
-                  to: '/products'
-               }
+                  to: '/products',
+               },
             ]"
          />
       </div>

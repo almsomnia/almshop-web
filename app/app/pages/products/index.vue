@@ -30,12 +30,12 @@ function onToggleWishlist(id: number) {
 const breadcrumbItems: BreadcrumbItem[] = [
    {
       label: "Home",
-      to: "/"
+      to: "/",
    },
    {
       label: "Products",
-      to: "/products"
-   }
+      to: "/products",
+   },
 ]
 </script>
 
@@ -49,7 +49,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
             <UBreadcrumb :items="breadcrumbItems" />
          </template>
       </UPageHeader>
-      <div class="grid grid-cols-4 gap-2 mt-4">
+      <div class="mt-4 grid grid-cols-4 gap-2">
          <NuxtLink
             v-for="item in data?.items"
             :key="item.id"

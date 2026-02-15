@@ -20,10 +20,10 @@ export default defineAppConfig({
          variants: {
             title: {
                true: {
-                  description: "mt-2"
-               }
-            }
-         }
+                  description: "mt-2",
+               },
+            },
+         },
       },
       modal: {
          variants: {
