@@ -98,6 +98,7 @@ function onToggleWishlist(id: number) {
                   label="View All"
                   trailing-icon="lucide:chevron-right"
                   color="neutral"
+                  to="/categories"
                />
             </div>
             <div class="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">

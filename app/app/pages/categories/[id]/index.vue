@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BreadcrumbItem } from "#ui/types"
+
 const route = useRoute()
 const categoryId = computed(() => route.params.id)
 
@@ -35,31 +37,60 @@ function onToggleWishlist(id: number) {
 definePageMeta({
    pageName: "Category",
 })
+
+const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
+   if (!category.value) return []
+   const items: BreadcrumbItem[] = []
+   items.push({
+      label: "All Categories",
+      to: "/categories",
+   })
+   if (category.value.parent) {
+      items.push({
+         label: category.value.parent.name,
+         to: `/categories/${category.value.parent.id}`,
+      })
+   }
+   items.push({
+      label: category.value.name,
+      to: `/categories/${category.value.id}`,
+   })
+   return items
+})
 </script>
 
 <template>
    <UContainer class="py-8">
       <div class="mb-8">
-         <div
+         <UPageHeader
             v-if="category"
-            class="space-y-2"
+            :title="category.name"
          >
-            <h1 class="text-3xl font-bold tracking-tight">
-               {{ category.name }}
-            </h1>
-            <p
-               v-if="category.parentId"
-               class="text-muted text-sm"
-            >
-               Part of a larger collection
-            </p>
-         </div>
+            <template #headline>
+               <UBreadcrumb :items="breadcrumbItems" />
+            </template>
+            <template #description>
+               <div class="divide-muted flex items-center divide-x">
+                  <div
+                     v-for="child in category.children"
+                     :key="`${category.id}-${child.id}`"
+                     class="px-2 first:ps-0 last:pe-0"
+                  >
+                     <NuxtLink
+                        :to="`/categories/${child.id}`"
+                        class="text-muted hover:text-primary text-sm hover:underline"
+                     >
+                        {{ child.name }}
+                     </NuxtLink>
+                  </div>
+               </div>
+            </template>
+         </UPageHeader>
          <USkeleton
             v-else
             class="h-10 w-48"
          />
       </div>
-
       <div
          v-if="pending"
          class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
@@ -74,11 +105,10 @@ definePageMeta({
             <USkeleton class="h-4 w-1/2" />
          </div>
       </div>
-
       <template v-else>
          <div
             v-if="products?.items?.length"
-            class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+            class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
          >
             <NuxtLink
                v-for="item in products.items"
