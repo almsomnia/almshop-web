@@ -11,6 +11,6 @@ export default eventHandler(async (event) => {
       },
       toJSON() {
          return this as API.Response<boolean>
-      }
+      },
    }
 })

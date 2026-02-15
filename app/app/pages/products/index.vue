@@ -21,7 +21,7 @@ const { wishlist, toggleWishlist } = useWishlist()
 function onToggleWishlist(id: number) {
    const message = toggleWishlist(id)
    appStore.notify({
-      title: `Product ${message} to wishlist`
+      title: `Product ${message} to wishlist`,
    })
 }
 </script>
@@ -32,7 +32,7 @@ function onToggleWishlist(id: number) {
          <NuxtLink
             v-for="item in data?.items"
             :key="item.id"
-            class="block col-span-1"
+            class="col-span-1 block"
             :to="`/products/${item.id}`"
          >
             <ProductCard
@@ -42,7 +42,7 @@ function onToggleWishlist(id: number) {
             />
          </NuxtLink>
       </div>
-      <div class="flex items-center justify-center mt-8">
+      <div class="mt-8 flex items-center justify-center">
          <UPagination
             v-model:page="query.page"
             :items-per-page="query.perPage"

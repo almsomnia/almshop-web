@@ -11,6 +11,6 @@ export default defineEventHandler(async (event) => {
       ...response,
       toJSON() {
          return this as API.Response<DTO.Product>
-      }
+      },
    }
 })

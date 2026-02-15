@@ -32,7 +32,7 @@ const { wishlist, toggleWishlist } = useWishlist()
 function onToggleWishlist(id: number) {
    const message = toggleWishlist(id)
    appStore.notify({
-      title: `Product ${message} to wishlist`
+      title: `Product ${message} to wishlist`,
    })
 }
 </script>

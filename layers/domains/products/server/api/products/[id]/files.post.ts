@@ -23,6 +23,6 @@ export default defineEventHandler(async (event) => {
       ...data,
       toJSON() {
          return this as API.Response<DTO.File[]>
-      }
+      },
    }
 })

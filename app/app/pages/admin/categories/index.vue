@@ -149,7 +149,7 @@ function getRowItems(row: Row<CategoryData>): DropdownMenuItem[] {
                   },
                   onPositive: async () => {
                      try {
-                        const response = await $api(
+                        const response = await $api<API.Response<DTO.Category>>(
                            `/api/categories/${row.original.id}`,
                            {
                               method: "delete",

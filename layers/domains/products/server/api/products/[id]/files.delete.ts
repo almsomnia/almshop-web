@@ -5,13 +5,13 @@ export default defineEventHandler(async (event) => {
 
    const data = await $api<API.Response<DTO.File[]>>(`/products/${id}/files`, {
       method: "delete",
-      body
+      body,
    })
 
    return {
       ...data,
       toJSON() {
          return this as API.Response<DTO.File[]>
-      }
+      },
    }
 })
