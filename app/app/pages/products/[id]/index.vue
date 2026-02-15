@@ -2,6 +2,7 @@
 import type { BreadcrumbItem } from "#ui/types"
 
 const route = useRoute()
+const appStore = useAppStore()
 
 const { data, pending, refresh } = await useApi(
    `/api/products/${route.params.id}`,
@@ -66,6 +67,20 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
          to: `/products/${route.params.id}`,
       },
    ]
+})
+
+const { wishlist, toggleWishlist } = useWishlist()
+function onToggleWishlist() {
+   if (!data.value?.id) return
+   toggleWishlist(data.value.id)
+   appStore.notify({
+      title: "Product added to wishlist",
+   })
+}
+
+const isWishlisted = computed(() => {
+   if (!data.value?.id) return false
+   return wishlist.value.includes(data.value.id)
 })
 </script>
 
@@ -262,24 +277,32 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
                         block
                      />
                      <UTooltip
-                        text="Add to Wishlist"
+                        :text="
+                           isWishlisted
+                              ? 'Remove from Wishlist'
+                              : 'Add to Wishlist'
+                        "
                         arrow
                      >
                         <UButton
                            variant="outline"
                            color="neutral"
                            size="lg"
-                           icon="lucide:heart"
+                           :icon="isWishlisted ? 'mdi:heart' : 'lucide:heart'"
                            class="hidden sm:inline-flex"
+                           @click="onToggleWishlist"
                         />
                         <UButton
                            variant="outline"
                            color="neutral"
                            size="lg"
-                           label="Wishlist"
-                           icon="lucide:heart"
+                           :label="
+                              isWishlisted ? 'Remove from Wishlist' : 'Wishlist'
+                           "
+                           :icon="isWishlisted ? 'mdi:heart' : 'lucide:heart'"
                            class="sm:hidden"
                            block
+                           @click="onToggleWishlist"
                         />
                      </UTooltip>
                   </div>
