@@ -50,7 +50,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
          </template>
       </UPageHeader>
       <div
-         class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+         class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
       >
          <NuxtLink
             v-for="item in data?.items"

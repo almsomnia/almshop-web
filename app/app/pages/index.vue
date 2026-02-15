@@ -84,7 +84,7 @@ function onToggleWishlist(id: number) {
             </div>
          </div>
       </section>
-      <UContainer class="space-y-16">
+      <div class="space-y-16">
          <section v-if="allCategories.length > 0">
             <div class="mb-8 flex items-center justify-between">
                <div>
@@ -176,6 +176,6 @@ function onToggleWishlist(id: number) {
                />
             </div>
          </section>
-      </UContainer>
+      </div>
    </div>
 </template>
