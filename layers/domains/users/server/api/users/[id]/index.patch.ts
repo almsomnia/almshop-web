@@ -3,8 +3,15 @@ export default defineEventHandler(async (event) => {
    const id = getRouterParam(event, "id")
    const body = await readBody(event)
 
-   return await $api<API.Response<DTO.User>>(`/users/${id}`, {
+   const data = await $api<API.Response<DTO.User>>(`/users/${id}`, {
       method: "patch",
       body,
    })
+
+   return {
+      ...data,
+      toJSON() {
+         return this as API.Response<DTO.User>
+      }
+   }
 })

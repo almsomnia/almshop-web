@@ -11,11 +11,18 @@ export default defineEventHandler(async (event) => {
       })
    }
 
-   return await $api<API.Response<unknown>>(`/products/${id}/files`, {
+   const data = await $api<API.Response<DTO.File[]>>(`/products/${id}/files`, {
       method: "POST",
       body,
       headers: {
          "Content-Type": contentType,
       },
    })
+
+   return {
+      ...data,
+      toJSON() {
+         return this as API.Response<DTO.File[]>
+      }
+   }
 })

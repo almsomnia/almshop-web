@@ -2,8 +2,15 @@ export default defineEventHandler(async (event) => {
    const $api = $serverApi(event)
    const body = await readBody(event)
 
-   return await $api<API.Response<DTO.Category>>(`/categories`, {
+   const data = await $api<API.Response<DTO.Category>>(`/categories`, {
       method: "post",
       body,
    })
+
+   return {
+      ...data,
+      toJSON() {
+         return this as API.Response<DTO.Category>
+      }
+   }
 })

@@ -15,5 +15,8 @@ export default eventHandler(async (event) => {
    return {
       data: { ...response.data.user },
       meta: response.meta,
+      toJSON() {
+         return this as API.Response<DTO.User>
+      }
    }
 })

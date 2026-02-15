@@ -9,5 +9,8 @@ export default eventHandler(async (event) => {
          message: "Logged out successfully",
          error: "",
       },
+      toJSON() {
+         return this as API.Response<boolean>
+      }
    }
 })
