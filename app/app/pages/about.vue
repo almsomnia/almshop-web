@@ -63,7 +63,7 @@ const stats = [
                class="h-full w-full object-cover"
             />
             <div
-               class="absolute inset-0 bg-gradient-to-t from-neutral-950/40 to-transparent"
+               class="absolute inset-0 bg-linear-to-t from-neutral-950/40 to-transparent"
             />
          </div>
       </div>
@@ -79,7 +79,7 @@ const stats = [
                />
             </div>
             <h3 class="text-xl font-bold">Quality First</h3>
-            <p class="text-muted">
+            <p class="text-muted text-pretty">
                We never compromise on quality. Every product is hand-picked and
                tested to ensure longevity and performance.
             </p>
@@ -94,7 +94,7 @@ const stats = [
                />
             </div>
             <h3 class="text-xl font-bold">Fast Delivery</h3>
-            <p class="text-muted">
+            <p class="text-muted text-pretty">
                Global shipping made easy. We partner with leading logistics
                providers to get your orders to you as quickly as possible.
             </p>
@@ -109,7 +109,7 @@ const stats = [
                />
             </div>
             <h3 class="text-xl font-bold">24/7 Support</h3>
-            <p class="text-muted">
+            <p class="text-muted text-pretty">
                Our dedicated support team is always here to help you with any
                questions or concerns you might have.
             </p>
