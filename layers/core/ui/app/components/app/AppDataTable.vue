@@ -29,6 +29,7 @@ const perPage = defineModel<number>("perPage", { required: false, default: 10 })
          :data="data"
          :columns="columns"
          :loading="props.loading"
+         class="w-full"
          :ui="{
             base: 'border-b border-default',
          }"
@@ -42,20 +43,26 @@ const perPage = defineModel<number>("perPage", { required: false, default: 10 })
          </template>
       </UTable>
       <slot name="footer">
-         <div class="flex items-center justify-between">
-            <span class="text-muted text-xs">
-               {{ props.from }} - {{ props.to }} of {{ props.total }} data
+         <div
+            class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+         >
+            <span class="text-muted order-2 text-xs sm:order-1">
+               {{ props.from }} &mdash; {{ props.to }} of
+               {{ props.total }} entries
             </span>
-            <div class="flex items-center gap-2.5">
+            <div
+               class="order-1 flex flex-wrap items-center justify-between gap-4 sm:order-2 sm:justify-start sm:gap-2.5"
+            >
                <USelect
                   v-model="perPage"
                   :items="[5, 10, 25, 50, 100]"
+                  class="w-32"
                >
                   <template #item-label="{ item }">
-                     {{ item }} per page
+                     {{ item }} / page
                   </template>
                   <template #default="{ modelValue }">
-                     {{ modelValue }} per page
+                     {{ modelValue }} / page
                   </template>
                </USelect>
                <UPagination
@@ -63,6 +70,9 @@ const perPage = defineModel<number>("perPage", { required: false, default: 10 })
                   :items-per-page="perPage"
                   :total="props.total"
                   :sibling-count="1"
+                  :ui="{
+                     root: 'flex-wrap justify-center',
+                  }"
                />
             </div>
          </div>
