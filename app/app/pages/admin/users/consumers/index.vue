@@ -5,8 +5,12 @@ import type { Row } from "@tanstack/vue-table"
 
 definePageMeta({
    pageName: "Consumers",
-   pageIcon: "lucide:users",
    pageOrder: 4,
+   parent: {
+      pageName: "Users",
+      pageIcon: "lucide:users",
+      pageOrder: 3,
+   },
 })
 
 const appStore = useAppStore()

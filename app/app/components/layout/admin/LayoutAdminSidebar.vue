@@ -25,56 +25,92 @@ const adminRoutes = router
    .sort((a, b) => (a.meta.pageOrder ?? 0) - (b.meta.pageOrder ?? 0))
 
 const items = computed<NavigationMenuItem[][]>(() => {
-   const menuMap = new Map<string, NavigationMenuItem>()
+   type MenuItem = NavigationMenuItem & { order: number }
 
-   // Create items for all routes first
+   const menuMap = new Map<string, MenuItem>()
+   const virtualParents = new Map<string, MenuItem>()
+   const routesByPageName = new Map<string, (typeof adminRoutes)[0]>()
+
    adminRoutes.forEach((route) => {
+      if (route.meta.pageName) {
+         routesByPageName.set(route.meta.pageName as string, route)
+      }
+
       menuMap.set(route.path, {
          label: (route.meta.pageName as string) ?? route.path,
          to: route.path,
          icon: route.meta.pageIcon as string,
          children: [] as NavigationMenuItem[],
+         order: (route.meta.pageOrder as number) ?? 0,
       })
    })
 
-   const roots: NavigationMenuItem[] = []
+   const roots: MenuItem[] = []
 
    adminRoutes.forEach((route) => {
       const item = menuMap.get(route.path)!
-      const pathParts = route.path.split("/").filter(Boolean)
+      const meta = route.meta as any
+      let parentItem: MenuItem | undefined
 
-      let foundParent = false
-      // Look for the closest parent in the menuMap (deeper than /admin)
-      for (let i = pathParts.length - 1; i >= 2; i--) {
-         const potentialParentPath = "/" + pathParts.slice(0, i).join("/")
-         if (
-            menuMap.has(potentialParentPath)
-            && potentialParentPath !== route.path
-         ) {
-            menuMap.get(potentialParentPath)!.children!.push(item)
-            foundParent = true
-            break
+      // 1. Group by meta.parent
+      if (meta.parent) {
+         const pName = meta.parent.pageName
+         const pRoute = routesByPageName.get(pName)
+         if (pRoute && pRoute.path !== route.path) {
+            parentItem = menuMap.get(pRoute.path)
+         } else if (pName !== meta.pageName) {
+            if (!virtualParents.has(pName)) {
+               const vp: MenuItem = {
+                  label: pName,
+                  icon: meta.parent.pageIcon,
+                  children: [] as NavigationMenuItem[],
+                  order: meta.parent.pageOrder ?? 0,
+               }
+               virtualParents.set(pName, vp)
+               roots.push(vp)
+            }
+
+            parentItem = virtualParents.get(pName)
          }
       }
 
-      if (!foundParent) {
-         roots.push(item)
+      // 2. Fallback to path-based nesting
+      if (!parentItem) {
+         const pathParts = route.path.split("/").filter(Boolean)
+         for (let i = pathParts.length - 1; i >= 2; i--) {
+            const potentialParentPath = "/" + pathParts.slice(0, i).join("/")
+            if (
+               menuMap.has(potentialParentPath)
+               && potentialParentPath !== route.path
+            ) {
+               parentItem = menuMap.get(potentialParentPath)
+               break
+            }
+         }
+      }
+
+      if (parentItem) {
+         parentItem.children!.push(item)
+      } else {
+         // Check if already added as virtual parent
+         if (!virtualParents.has((meta.pageName as string) ?? "")) {
+            roots.push(item)
+         }
       }
    })
 
-   // Cleanup empty children arrays
-   const formatMenu = (
-      menuItems: NavigationMenuItem[]
-   ): NavigationMenuItem[] => {
-      return menuItems.map((item) => {
-         const newItem = { ...item }
-         if (newItem.children && newItem.children.length > 0) {
-            newItem.children = formatMenu(newItem.children)
-         } else {
-            delete newItem.children
-         }
-         return newItem
-      })
+   const formatMenu = (menuItems: MenuItem[]): NavigationMenuItem[] => {
+      return menuItems
+         .sort((a, b) => a.order - b.order)
+         .map((item) => {
+            const { order: _, ...rest } = item
+            if (rest.children && rest.children.length > 0) {
+               rest.children = formatMenu(rest.children as MenuItem[])
+            } else {
+               delete rest.children
+            }
+            return rest
+         })
    }
 
    return [formatMenu(roots)]

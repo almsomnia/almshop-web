@@ -6,6 +6,7 @@ declare module "vue-router" {
       pageIcon?: string
       pageOrder?: number
       hideOnSidebar?: boolean
+      parent?: RouteMeta
    }
 }
 
@@ -15,6 +16,7 @@ declare module "#app" {
       pageIcon?: string
       pageOrder?: number
       hideOnSidebar?: boolean
+      parent?: PageMeta
    }
 }
 
