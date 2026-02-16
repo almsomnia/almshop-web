@@ -51,6 +51,14 @@ const columns: TableColumn<DTO.Consumer>[] = [
       header: "Email",
    },
    {
+      accessorKey: "gender",
+      header: "Gender",
+      cell: ({ row }) =>
+         h(resolveComponent("UIcon"), {
+            name: $parseGender(row.original.gender, "icon"),
+         }),
+   },
+   {
       accessorKey: "phoneNumber",
       header: "Phone Number",
       cell: ({ row }) => $formatPhoneNumber(row.original.phoneNumber),
