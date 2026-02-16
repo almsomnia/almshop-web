@@ -13,7 +13,7 @@ declare namespace DTO {
          cartId: number
          productId: number
          quantity: number
-         products: DTO.Product[]
+         product: DTO.Product
       }
    }
 }
