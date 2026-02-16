@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = withDefaults(
    defineProps<{
-      loading: Ref<boolean>
+      loading?: Ref<boolean>
    }>(),
    {
       loading: () => shallowRef(false),
@@ -9,14 +9,13 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-   submit: [data: InferSchema<typeof $userSchema, "create">]
+   submit: [data: InferSchema<typeof $adminSchema, "create">]
 }>()
 
-const schema = $userSchema().create
+const schema = $adminSchema().create
 const state = reactive<Partial<InferFlatSchema<typeof schema>>>({
    name: undefined,
    email: undefined,
-   referenceType: undefined,
    password: undefined,
    passwordConfirmation: undefined,
 })
@@ -30,7 +29,6 @@ function onSubmit(data: InferFlatSchema<typeof schema>) {
    <FormUserBase
       v-model="state"
       :schema="schema"
-      :loading="props.loading"
       @submit="onSubmit"
    >
       <template #extensions="{ loading }">

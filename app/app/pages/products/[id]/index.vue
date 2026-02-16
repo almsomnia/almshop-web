@@ -83,9 +83,7 @@ const isWishlisted = computed(() => {
    return wishlist.value.includes(data.value.id)
 })
 
-function addToCart() {
-
-}
+function addToCart() {}
 </script>
 
 <template>

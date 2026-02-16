@@ -3,6 +3,22 @@ declare namespace DTO {
       id: number
       name: string
       email: string
-      role: HintedString<"consumer" | "admin">
+      createdAt: string
+   } & User.Reference
+
+   namespace User {
+      type Reference = UserAdmin | UserConsumer
+
+      type UserAdmin = {
+         referenceType: "admin"
+         referenceId: number
+         reference: DTO.Admin
+      }
+
+      type UserConsumer = {
+         referenceType: "consumer"
+         referenceId: number
+         reference: DTO.Consumer
+      }
    }
 }

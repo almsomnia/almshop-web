@@ -4,12 +4,13 @@ import type { TableColumn, DropdownMenuItem } from "@nuxt/ui"
 import type { Row } from "@tanstack/vue-table"
 
 definePageMeta({
-   pageName: "Users",
+   pageName: "Admins",
    pageIcon: "lucide:users",
    pageOrder: 3,
 })
 
 const appStore = useAppStore()
+const authStore = useAuthStore()
 
 const query = reactive<API.Query<{ name: string; role: string }>>({
    page: 1,
@@ -18,8 +19,8 @@ const query = reactive<API.Query<{ name: string; role: string }>>({
    role: undefined,
 })
 
-const { data, pending, refresh } = useApi(`/api/users`, {
-   key: "users",
+const { data, pending, refresh } = useApi(`/api/admins`, {
+   key: "admins",
    method: "get",
    query,
    transform: (res) => res.data,
@@ -38,25 +39,20 @@ watchDebounced(
    { debounce: 800, maxWait: 1000 }
 )
 
-const columns: TableColumn<DTO.User>[] = [
+const columns: TableColumn<DTO.Admin>[] = [
    {
-      accessorKey: "name",
+      accessorKey: "user.name",
       header: "Name",
    },
    {
-      accessorKey: "email",
+      accessorKey: "user.email",
       header: "Email",
    },
    {
-      accessorKey: "role",
-      header: "Role",
+      accessorKey: "createdAt",
+      header: "Created at",
       cell: ({ row }) =>
-         h(resolveComponent("UBadge"), {
-            color: row.original.role == "admin" ? "primary" : "secondary",
-            variant: "subtle",
-            class: "capitalize",
-            label: row.original.role,
-         }),
+         $formatDate(row.original.createdAt, "DD MMM YYYY HH:mm"),
    },
    {
       id: "actions",
@@ -87,7 +83,7 @@ const columns: TableColumn<DTO.User>[] = [
    },
 ]
 
-function getRowItems(row: Row<DTO.User>): DropdownMenuItem[] {
+function getRowItems(row: Row<DTO.Admin>): DropdownMenuItem[] {
    return [
       {
          type: "label",
@@ -109,11 +105,12 @@ function getRowItems(row: Row<DTO.User>): DropdownMenuItem[] {
          label: "Delete",
          icon: "lucide:trash",
          color: "error",
+         disabled: authStore.user?.id === row.original.user?.id,
          onSelect: () => {
             appStore.showDialog(
-               "Delete Category",
+               "Delete Admin",
                h(resolveComponent("AppConfirmationPrompt"), {
-                  prompt: `Are you sure you want to delete "${row.original.name}"?`,
+                  prompt: `Are you sure you want to delete "${row.original.user?.name}"?`,
                   positiveButtonProps: {
                      label: "Delete",
                      color: "error",
@@ -158,15 +155,13 @@ function getRowItems(row: Row<DTO.User>): DropdownMenuItem[] {
    ]
 }
 
-const roleItems: string[] = ["admin", "consumer"]
-
 const formLoading = shallowRef(false)
 
-function openForm(data?: DTO.User) {
-   const title = data ? "Edit User" : "Create User"
+function openForm(data?: DTO.Admin) {
+   const title = data ? "Edit Admin" : "Create Admin"
 
    const formSubmitHandler = async (
-      apiHandler: () => Promise<API.Response<DTO.User>>
+      apiHandler: () => Promise<API.Response<DTO.Admin>>
    ) => {
       try {
          formLoading.value = true
@@ -190,27 +185,27 @@ function openForm(data?: DTO.User) {
    }
 
    const component = data
-      ? h(resolveComponent("FormUserUpdate"), {
+      ? h(resolveComponent("FormAdminUpdate"), {
            data,
            loading: formLoading,
            onSubmit: async (
-              values: InferSchema<typeof $userSchema, "update">
+              values: InferSchema<typeof $adminSchema, "update">
            ) => {
               await formSubmitHandler(() =>
-                 $api(`/api/users/${data.id}`, {
+                 $api(`/api/admins/${data.id}`, {
                     method: "patch",
                     body: values,
                  })
               )
            },
         })
-      : h(resolveComponent("FormUserCreate"), {
+      : h(resolveComponent("FormAdminCreate"), {
            loading: formLoading,
            onSubmit: async (
-              values: InferSchema<typeof $userSchema, "create">
+              values: InferSchema<typeof $adminSchema, "create">
            ) => {
               await formSubmitHandler(() =>
-                 $api(`/api/users`, {
+                 $api(`/api/admins`, {
                     method: "post",
                     body: values,
                  })
@@ -242,19 +237,8 @@ function openForm(data?: DTO.User) {
                   icon="lucide:search"
                   class="max-w-3xs"
                />
-               <USelectMenu
-                  v-model="query.role"
-                  :items="roleItems"
-                  placeholder="Role"
-                  clear
-                  class="max-w-48"
-                  :ui="{
-                     itemLabel: 'capitalize',
-                     base: 'capitalize',
-                  }"
-               />
                <UButton
-                  label="Create"
+                  label="New Admin"
                   icon="lucide:plus"
                   color="primary"
                   class="ms-auto"

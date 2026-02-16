@@ -24,15 +24,61 @@ const adminRoutes = router
    .filter((item) => !item.meta.hideOnSidebar)
    .sort((a, b) => (a.meta.pageOrder ?? 0) - (b.meta.pageOrder ?? 0))
 
-const items: NavigationMenuItem[][] = [
-   adminRoutes.map((route) => {
-      return {
-         label: route.meta.pageName,
+const items = computed<NavigationMenuItem[][]>(() => {
+   const menuMap = new Map<string, NavigationMenuItem>()
+
+   // Create items for all routes first
+   adminRoutes.forEach((route) => {
+      menuMap.set(route.path, {
+         label: (route.meta.pageName as string) ?? route.path,
          to: route.path,
-         icon: route.meta.pageIcon,
+         icon: route.meta.pageIcon as string,
+         children: [] as NavigationMenuItem[],
+      })
+   })
+
+   const roots: NavigationMenuItem[] = []
+
+   adminRoutes.forEach((route) => {
+      const item = menuMap.get(route.path)!
+      const pathParts = route.path.split("/").filter(Boolean)
+
+      let foundParent = false
+      // Look for the closest parent in the menuMap (deeper than /admin)
+      for (let i = pathParts.length - 1; i >= 2; i--) {
+         const potentialParentPath = "/" + pathParts.slice(0, i).join("/")
+         if (
+            menuMap.has(potentialParentPath)
+            && potentialParentPath !== route.path
+         ) {
+            menuMap.get(potentialParentPath)!.children!.push(item)
+            foundParent = true
+            break
+         }
       }
-   }),
-]
+
+      if (!foundParent) {
+         roots.push(item)
+      }
+   })
+
+   // Cleanup empty children arrays
+   const formatMenu = (
+      menuItems: NavigationMenuItem[]
+   ): NavigationMenuItem[] => {
+      return menuItems.map((item) => {
+         const newItem = { ...item }
+         if (newItem.children && newItem.children.length > 0) {
+            newItem.children = formatMenu(newItem.children)
+         } else {
+            delete newItem.children
+         }
+         return newItem
+      })
+   }
+
+   return [formatMenu(roots)]
+})
 
 const appStore = useAppStore()
 const authStore = useAuthStore()

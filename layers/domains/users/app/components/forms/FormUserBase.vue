@@ -2,9 +2,7 @@
    setup
    lang="ts"
    generic="
-      T extends ReturnType<typeof $userSchema>['base'] = ReturnType<
-         typeof $userSchema
-      >['base']
+      T extends UserSchemaBase = UserSchemaBase
    "
 >
 import type { FormSubmitEvent } from "#ui/types"
@@ -31,8 +29,6 @@ const state = defineModel<Partial<InferFlatSchema<T>>>({
       role: undefined,
    }),
 })
-
-const roleItems: DTO.User["role"][] = ["admin", "consumer"]
 
 const loading = computed(() => unref(props.loading))
 
@@ -67,21 +63,6 @@ function onSubmit(e: FormSubmitEvent<InferFlatSchema<T>>) {
          <UInput
             v-model="state.email"
             :loading="loading"
-         />
-      </UFormField>
-      <UFormField
-         name="role"
-         label="Role"
-         required
-      >
-         <USelect
-            v-model="state.role"
-            :items="roleItems"
-            :loading="loading"
-            :ui="{
-               itemLabel: 'capitalize',
-               base: 'capitalize',
-            }"
          />
       </UFormField>
       <slot
