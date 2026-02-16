@@ -19,7 +19,7 @@ const imgSrc = computed(() => {
 async function onSubmit(data: InferSchema<typeof $authSchema, "login">) {
    try {
       const response = await authStore.login(data)
-      if (response.data.role === "admin") {
+      if (response.data.referenceType === "admin") {
          return await navigateTo(`/admin`)
       }
       const cartStore = useCartStore()
