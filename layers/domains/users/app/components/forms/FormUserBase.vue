@@ -1,10 +1,4 @@
-<script
-   setup
-   lang="ts"
-   generic="
-      T extends UserSchemaBase = UserSchemaBase
-   "
->
+<script setup lang="ts" generic="T extends UserSchemaBase = UserSchemaBase">
 import type { FormSubmitEvent } from "#ui/types"
 
 const props = withDefaults(

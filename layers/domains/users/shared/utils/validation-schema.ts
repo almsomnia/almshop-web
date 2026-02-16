@@ -12,8 +12,8 @@ export type UserSchemaBase = typeof userSchemaBase
 
 export function $consumerSchema() {
    const reference = z.object({
-      dob: z.date().nullable(),
-      gender: z.boolean().nullable(),
+      dob: z.date().nullish(),
+      gender: z.boolean().nullish(),
       phoneNumber: z.string().regex(/^\d+$/).nullable(),
    })
 
@@ -25,7 +25,14 @@ export function $consumerSchema() {
          path: ["passwordConfirmation"],
       })
 
-   return { reference, create }
+   const update = z
+      .object({
+         name: userFields.name,
+         email: userFields.email,
+      })
+      .extend(reference.shape)
+
+   return { reference, create, update }
 }
 
 export function $adminSchema() {

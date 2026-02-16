@@ -59,6 +59,11 @@ export default defineAppConfig({
             root: "w-full",
          },
       },
+      inputDate: {
+         slots: {
+            base: "w-full",
+         },
+      },
       button: {
          variants: {
             color: {

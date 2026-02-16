@@ -1,26 +1,25 @@
 <script setup lang="ts">
 import type { NuxtError } from "#app"
-import type { TableColumn, DropdownMenuItem } from "@nuxt/ui"
+import type { TableColumn, DropdownMenuItem } from "#ui/types"
 import type { Row } from "@tanstack/vue-table"
 
 definePageMeta({
-   pageName: "Admins",
+   pageName: "Consumers",
    pageIcon: "lucide:users",
-   pageOrder: 3,
+   pageOrder: 4,
 })
 
 const appStore = useAppStore()
 const authStore = useAuthStore()
 
-const query = reactive<API.Query<{ name: string; role: string }>>({
+const query = reactive<API.Query<{ name: string }>>({
    page: 1,
    perPage: 10,
    name: "",
-   role: undefined,
 })
 
-const { data, pending, refresh } = useApi(`/api/admins`, {
-   key: "admins",
+const { data, pending, refresh } = useApi(`/api/consumers`, {
+   key: "consumers",
    method: "get",
    query,
    transform: (res) => res.data,
@@ -36,10 +35,13 @@ watchExcludable(
 watchDebounced(
    () => query.name,
    () => refresh(),
-   { debounce: 800, maxWait: 1000 }
+   {
+      debounce: 800,
+      maxWait: 1000,
+   }
 )
 
-const columns: TableColumn<DTO.Admin>[] = [
+const columns: TableColumn<DTO.Consumer>[] = [
    {
       accessorKey: "user.name",
       header: "Name",
@@ -47,6 +49,11 @@ const columns: TableColumn<DTO.Admin>[] = [
    {
       accessorKey: "user.email",
       header: "Email",
+   },
+   {
+      accessorKey: "phoneNumber",
+      header: "Phone Number",
+      cell: ({ row }) => $formatPhoneNumber(row.original.phoneNumber),
    },
    {
       accessorKey: "createdAt",
@@ -83,7 +90,7 @@ const columns: TableColumn<DTO.Admin>[] = [
    },
 ]
 
-function getRowItems(row: Row<DTO.Admin>): DropdownMenuItem[] {
+function getRowItems(row: Row<DTO.Consumer>): DropdownMenuItem[] {
    return [
       {
          type: "label",
@@ -157,11 +164,11 @@ function getRowItems(row: Row<DTO.Admin>): DropdownMenuItem[] {
 
 const formLoading = shallowRef(false)
 
-function openForm(data?: DTO.Admin) {
-   const title = data ? "Edit Admin" : "Create Admin"
+function openForm(data?: DTO.Consumer) {
+   const title = data ? "Edit Consumer" : "Create Consumer"
 
    const formSubmitHandler = async (
-      apiHandler: () => Promise<API.Response<DTO.Admin>>
+      apiHandler: () => Promise<API.Response<DTO.Consumer>>
    ) => {
       try {
          formLoading.value = true
@@ -175,7 +182,7 @@ function openForm(data?: DTO.Admin) {
       } catch (error) {
          const err = error as NuxtError
          appStore.notify({
-            title: "Error",
+            title: err.statusMessage,
             description: err.message,
             color: "error",
          })
@@ -185,27 +192,27 @@ function openForm(data?: DTO.Admin) {
    }
 
    const component = data
-      ? h(resolveComponent("FormAdminUpdate"), {
+      ? h(resolveComponent("FormConsumerUpdate"), {
            data,
            loading: formLoading,
            onSubmit: async (
-              values: InferSchema<typeof $adminSchema, "update">
+              values: InferSchema<typeof $consumerSchema, "update">
            ) => {
               await formSubmitHandler(() =>
-                 $api(`/api/admins/${data.id}`, {
+                 $api(`/api/consumers/${data.id}`, {
                     method: "patch",
                     body: values,
                  })
               )
            },
         })
-      : h(resolveComponent("FormAdminCreate"), {
+      : h(resolveComponent("FormConsumerCreate"), {
            loading: formLoading,
            onSubmit: async (
-              values: InferSchema<typeof $adminSchema, "create">
+              values: InferSchema<typeof $consumerSchema, "create">
            ) => {
               await formSubmitHandler(() =>
-                 $api(`/api/admins`, {
+                 $api(`/api/consumers`, {
                     method: "post",
                     body: values,
                  })
@@ -238,7 +245,7 @@ function openForm(data?: DTO.Admin) {
                   class="max-w-3xs"
                />
                <UButton
-                  label="New Admin"
+                  label="New Consumer"
                   icon="lucide:plus"
                   color="primary"
                   class="ms-auto"
