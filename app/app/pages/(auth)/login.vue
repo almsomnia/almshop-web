@@ -22,6 +22,8 @@ async function onSubmit(data: InferSchema<typeof $authSchema, "login">) {
       if (response.data.role === "admin") {
          return await navigateTo(`/admin`)
       }
+      const cartStore = useCartStore()
+      cartStore.fetchCart()
       return await navigateTo(`/`)
    } catch (error) {
       const err = error as NuxtError<any>
