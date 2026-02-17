@@ -3,5 +3,5 @@ export default function (value: string) {
    // Only allow numeric and '+' characters
    const cleaned = value.replace(/[^0-9+]/g, "")
    // Add space every 4 characters
-   return cleaned.replace(/(.{3})/g, "$1 ").trim()
+   return cleaned.replace(/(.{4})/g, "$1 ").trim()
 }

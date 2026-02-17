@@ -37,6 +37,7 @@ const userMenuItems = computed<DropdownMenuItem[]>(() => [
    {
       label: "Profile",
       icon: "lucide:user",
+      to: "/profile",
    },
    {
       type: "separator",
