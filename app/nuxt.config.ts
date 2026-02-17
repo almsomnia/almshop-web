@@ -13,6 +13,7 @@ export default defineNuxtConfig({
       "../layers/domains/users",
       "../layers/domains/cart",
       "../layers/domains/region",
+      "../layers/domains/addresses",
    ],
 
    routeRules: {

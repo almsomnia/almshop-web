@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SelectMenuItem, AcceptableValue } from "#ui/types"
 
-type Option = SelectMenuItem | { label: string, value: string }
+type Option = SelectMenuItem | { label: string; value: string }
 
 const props = withDefaults(
    defineProps<{
