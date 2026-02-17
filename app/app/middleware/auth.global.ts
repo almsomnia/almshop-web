@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
    }
 
    // NOTE: admin can access all pages
-   if (authStore.user?.role == "admin") return
+   if (authStore.user?.referenceType == "admin") return
 
    // NOTE: consumer can't access admin pages
    if (to.path.includes("admin")) {

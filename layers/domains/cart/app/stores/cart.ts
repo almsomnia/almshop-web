@@ -21,8 +21,27 @@ export const useCartStore = defineStore("almshop-cart", () => {
 
       if (!cart.value) {
          await fetchCart()
+      } else {
+         cart.value.cartDetails = response.data
       }
-      cart.value!.cartDetails = response.data
+      return response
+   }
+
+   async function removeItemFromCart(...ids: number[]) {
+      const response = await $api(`/api/cart/bulk`, {
+         method: "delete",
+         body: {
+            ids,
+         },
+      })
+
+      if (!cart.value) {
+         await fetchCart()
+      } else {
+         cart.value.cartDetails = cart.value.cartDetails.filter(
+            (item) => !ids.includes(item.id)
+         )
+      }
       return response
    }
 
@@ -33,6 +52,23 @@ export const useCartStore = defineStore("almshop-cart", () => {
       cart.value = response.data
    }
 
+   async function clearCart() {
+      if (items.value.length === 0) return
+      const response = await $api(`/api/cart/bulk`, {
+         method: "delete",
+         body: {
+            ids: items.value.map((item) => item.id),
+         },
+      })
+
+      if (!cart.value) {
+         await fetchCart()
+      } else {
+         cart.value.cartDetails = []
+      }
+      return response
+   }
+
    function $reset() {
       cart.value = undefined
    }
@@ -41,7 +77,9 @@ export const useCartStore = defineStore("almshop-cart", () => {
       cart,
       items,
       addItemToCart,
+      removeItemFromCart,
       fetchCart,
+      clearCart,
       $reset,
    }
 })
