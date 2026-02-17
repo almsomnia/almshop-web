@@ -9,6 +9,7 @@ const appConfig = useAppConfig()
 const colorMode = useColorMode()
 const authStore = useAuthStore()
 const appStore = useAppStore()
+const route = useRoute()
 
 const imgSrc = computed(() => {
    return colorMode.preference === "dark"
@@ -19,12 +20,47 @@ const imgSrc = computed(() => {
 async function onSubmit(data: InferSchema<typeof $authSchema, "login">) {
    try {
       const response = await authStore.login(data)
+
+      if (response.data.referenceType === "consumer") {
+         const cartStore = useCartStore()
+         await cartStore.fetchCart()
+      }
+
+      await handlePendingActions()
+
+      if (route.query.redirect) {
+         return await navigateTo(route.query.redirect as string)
+      }
+
       if (response.data.referenceType === "admin") {
          return await navigateTo(`/admin`)
       }
-      const cartStore = useCartStore()
-      cartStore.fetchCart()
       return await navigateTo(`/`)
+   } catch (error) {
+      const err = error as NuxtError<any>
+      appStore.notify({
+         title: err?.statusMessage,
+         description: err?.message,
+         color: "error",
+      })
+   }
+}
+
+async function handlePendingActions() {
+   try {
+      const pendingAction = localStorage.getItem("pending-action")
+      if (!pendingAction) return
+      const action = JSON.parse(pendingAction)
+      if (action.type === "ADD_TO_CART") {
+         const cartStore = useCartStore()
+         await cartStore.addItemToCart(action.payload)
+         appStore.notify({
+            title: "Product added to cart",
+         })
+      }
+
+      localStorage.removeItem("pending-action")
+      return navigateTo(action.redirect)
    } catch (error) {
       const err = error as NuxtError<any>
       appStore.notify({

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { NuxtError } from "#app"
 import type { BreadcrumbItem } from "#ui/types"
 
 const route = useRoute()
@@ -83,7 +84,42 @@ const isWishlisted = computed(() => {
    return wishlist.value.includes(data.value.id)
 })
 
-function addToCart() {}
+const cartStore = useCartStore()
+const authStore = useAuthStore()
+async function addToCart() {
+   try {
+      if (!data.value) return
+      if (!authStore.user) {
+         const pendingAction = {
+            type: "ADD_TO_CART",
+            payload: {
+               quantity: cartQty.value,
+               product: data.value as DTO.Product,
+            },
+            redirect: route.fullPath,
+         }
+
+         localStorage.setItem("pending-action", JSON.stringify(pendingAction))
+         navigateTo(`/login?redirect=${route.fullPath}`)
+         return
+      }
+
+      await cartStore.addItemToCart({
+         quantity: cartQty.value,
+         product: data.value as DTO.Product,
+      })
+      appStore.notify({
+         title: "Product added to cart",
+      })
+   } catch (error) {
+      const err = error as NuxtError
+      appStore.notify({
+         title: err.statusMessage,
+         description: err.message,
+         color: "error",
+      })
+   }
+}
 </script>
 
 <template>

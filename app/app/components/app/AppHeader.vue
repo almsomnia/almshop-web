@@ -104,14 +104,14 @@ onMounted(() => {
                            <span class="font-semibold">Cart</span>
                            <NuxtLink
                               to="/cart"
-                              class="text-muted hover:text-highlighted ms-auto text-sm font-medium transition hover:underline"
+                              class="text-muted hover:text-highlighted ms-auto text-xs font-medium transition hover:underline"
                            >
                               See All
                            </NuxtLink>
                         </div>
                         <div
                            v-if="cartStore.items.length > 0"
-                           class="space-y-1 p-2"
+                           class="max-h-64 space-y-1 overflow-y-auto p-2"
                         >
                            <NuxtLink
                               v-for="item in cartStore.items"
