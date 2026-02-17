@@ -85,7 +85,7 @@ async function removeItemFromCart(id: number) {
       appStore.notify({
          title: err.statusMessage,
          description: err.message,
-         color: "error"
+         color: "error",
       })
    }
 }
@@ -105,7 +105,8 @@ async function deleteItems() {
                await cartStore.removeItemFromCart(...ids)
                appStore.notify({
                   title: "Items deleted",
-                  description: "All selected items have been removed from your cart.",
+                  description:
+                     "All selected items have been removed from your cart.",
                })
                appStore.closeDialog()
             } catch (error) {

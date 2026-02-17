@@ -1,0 +1,66 @@
+<script setup lang="ts">
+import type { SelectMenuItem, AcceptableValue } from "#ui/types"
+
+type Option = SelectMenuItem | { label: string; value: string }
+
+const props = withDefaults(
+   defineProps<{
+      regencyCode: string
+      labelKey?: string
+      valueKey?: string
+      placeholder?: string
+      clear?: boolean
+      disabled?: boolean
+   }>(),
+   {
+      labelKey: "label",
+      valueKey: "value",
+   }
+)
+
+const model = defineModel<AcceptableValue | Option>({ required: false })
+
+const items = ref<Option[]>([])
+
+async function fetchItems() {
+   if (!props.regencyCode) return
+
+   const response = await $api<API.Response<DTO.District[]>>(
+      `/api/districts/${props.regencyCode}`,
+      {
+         method: "get",
+      }
+   )
+
+   items.value = response.data.map((item) => {
+      return {
+         label: item.name,
+         value: item.code,
+      }
+   })
+}
+
+watch(
+   () => props.regencyCode,
+   () => {
+      fetchItems()
+   }
+)
+
+onMounted(() => {
+   fetchItems()
+})
+</script>
+
+<template>
+   <USelectMenu
+      :items="items"
+      v-model="model"
+      :value-key="props.valueKey"
+      :label-key="props.labelKey"
+      :placeholder="props.placeholder"
+      :clear="props.clear"
+      :disabled="props.disabled"
+      class="w-full"
+   />
+</template>
