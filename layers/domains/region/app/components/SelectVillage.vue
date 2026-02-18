@@ -42,14 +42,17 @@ async function fetchItems() {
 
 watch(
    () => props.districtCode,
-   () => {
+   (value) => {
+      if (!value) {
+         items.value = []
+         model.value = null
+         return
+      }
       fetchItems()
+   }, {
+      immediate: true
    }
 )
-
-onMounted(() => {
-   fetchItems()
-})
 </script>
 
 <template>

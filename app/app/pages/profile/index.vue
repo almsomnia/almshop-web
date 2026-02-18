@@ -56,6 +56,7 @@ const sections = computed(() => [
          h(resolveComponent("UButton"), {
             label: "Add Address",
             icon: "lucide:plus",
+            onClick: () => openAddressForm(),
          }),
       ],
    },
@@ -91,6 +92,90 @@ watch(selectedSection, async (value) => {
       await fetchAddresses()
    }
 })
+
+type RegionSelectorProp = {
+   modelValue: string | null
+   "onUpdate:modelValue": (value: string | null) => void
+   loading: boolean
+   disabled: boolean
+}
+
+function openAddressForm() {
+   const form = h(
+      resolveComponent("FormAddress"),
+      {
+         consumerId: user.value?.referenceId,
+         onSubmit: async (values: InferSchema<typeof $addressSchema, "base">) => {
+            try {
+               const response = await $api<API.Response<DTO.Address>>(
+                  `/api/addresses`,
+                  {
+                     method: "post",
+                     body: values,
+                  }
+               )
+               await fetchAddresses()
+               appStore.notify({
+                  title: "Success",
+                  description: response.meta.message,
+               })
+               appStore.closeDialog()
+            } catch (error) {
+               const err = error as NuxtError
+               appStore.notify({
+                  title: err.statusMessage,
+                  description: err.message,
+                  color: "error",
+               })
+            }
+         }
+      },
+      {
+         "province-selector": (slotProps: RegionSelectorProp) =>
+            h(resolveComponent("SelectProvince"), {
+               modelValue: slotProps.modelValue,
+               "onUpdate:modelValue": slotProps["onUpdate:modelValue"],
+               clear: true,
+               loading: slotProps.loading,
+               disabled: slotProps.disabled,
+            }),
+         "regency-selector": (
+            slotProps: RegionSelectorProp & { provinceCode: string | null }
+         ) =>
+            h(resolveComponent("SelectRegency"), {
+               modelValue: slotProps.modelValue,
+               "onUpdate:modelValue": slotProps["onUpdate:modelValue"],
+               provinceCode: slotProps.provinceCode,
+               clear: true,
+               loading: slotProps.loading,
+               disabled: slotProps.disabled,
+            }),
+         "district-selector": (
+            slotProps: RegionSelectorProp & { regencyCode: string | null }
+         ) =>
+            h(resolveComponent("SelectDistrict"), {
+               modelValue: slotProps.modelValue,
+               "onUpdate:modelValue": slotProps["onUpdate:modelValue"],
+               regencyCode: slotProps.regencyCode,
+               clear: true,
+               loading: slotProps.loading,
+               disabled: slotProps.disabled,
+            }),
+         "village-selector": (
+            slotProps: RegionSelectorProp & { districtCode: string | null }
+         ) =>
+            h(resolveComponent("SelectVillage"), {
+               modelValue: slotProps.modelValue,
+               "onUpdate:modelValue": slotProps["onUpdate:modelValue"],
+               districtCode: slotProps.districtCode,
+               clear: true,
+               loading: slotProps.loading,
+               disabled: slotProps.disabled,
+            }),
+      }
+   )
+   appStore.showDialog("Address Form", form)
+}
 </script>
 
 <template>
