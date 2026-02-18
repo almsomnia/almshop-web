@@ -10,6 +10,7 @@ const colorMode = useColorMode()
 const authStore = useAuthStore()
 const appStore = useAppStore()
 const route = useRoute()
+const dayjs = useDayjs()
 
 const imgSrc = computed(() => {
    return colorMode.preference === "dark"
@@ -51,6 +52,10 @@ async function handlePendingActions() {
       const pendingAction = localStorage.getItem("pending-action")
       if (!pendingAction) return
       const action = JSON.parse(pendingAction)
+      if (dayjs().isAfter(action.ttl)) {
+         localStorage.removeItem("pending-action")
+         return
+      }
       if (action.type === "ADD_TO_CART") {
          const cartStore = useCartStore()
          await cartStore.addItemToCart(action.payload)

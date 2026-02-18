@@ -4,6 +4,7 @@ import type { BreadcrumbItem } from "#ui/types"
 
 const route = useRoute()
 const appStore = useAppStore()
+const dayjs = useDayjs()
 
 const { data, pending, refresh } = await useApi(
    `/api/products/${route.params.id}`,
@@ -97,6 +98,7 @@ async function addToCart() {
                product: data.value as DTO.Product,
             },
             redirect: route.fullPath,
+            ttl: dayjs().add(15, "minutes").valueOf(),
          }
 
          localStorage.setItem("pending-action", JSON.stringify(pendingAction))
