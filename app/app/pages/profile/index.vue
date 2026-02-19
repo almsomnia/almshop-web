@@ -100,26 +100,35 @@ type RegionSelectorProp = {
    disabled: boolean
 }
 
-function openAddressForm() {
+function openAddressForm(data?: DTO.Address) {
+   const apiHandler = data
+      ? (values: InferSchema<typeof $addressSchema, "base">) =>
+           $api(`/api/addresses/${data.id}`, {
+              method: "patch",
+              body: values,
+           })
+      : (values: InferSchema<typeof $addressSchema, "base">) =>
+           $api(`/api/addresses`, {
+              method: "post",
+              body: values,
+           })
+
    const form = h(
       resolveComponent("FormAddress"),
       {
          consumerId: user.value?.referenceId,
-         onSubmit: async (values: InferSchema<typeof $addressSchema, "base">) => {
+         data,
+         onSubmit: async (
+            values: InferSchema<typeof $addressSchema, "base">
+         ) => {
             try {
-               const response = await $api<API.Response<DTO.Address>>(
-                  `/api/addresses`,
-                  {
-                     method: "post",
-                     body: values,
-                  }
-               )
-               await fetchAddresses()
+               const response = await apiHandler(values)
                appStore.notify({
                   title: "Success",
                   description: response.meta.message,
                })
                appStore.closeDialog()
+               await fetchAddresses()
             } catch (error) {
                const err = error as NuxtError
                appStore.notify({
@@ -128,7 +137,7 @@ function openAddressForm() {
                   color: "error",
                })
             }
-         }
+         },
       },
       {
          "province-selector": (slotProps: RegionSelectorProp) =>
@@ -175,6 +184,64 @@ function openAddressForm() {
       }
    )
    appStore.showDialog("Address Form", form)
+}
+
+function deleteAddress(data: DTO.Address) {
+   appStore.showDialog(
+      "Confirm Delete",
+      h(resolveComponent("AppConfirmationPrompt"), {
+         prompt: "Are you sure you want to delete this address?",
+         positiveButtonProps: {
+            label: "Delete",
+            color: "error",
+            icon: "lucide:trash",
+         },
+         onPositive: async () => {
+            try {
+               await $api(`/api/addresses/${data.id}`, {
+                  method: "delete",
+               })
+               await fetchAddresses()
+               appStore.notify({
+                  title: "Success",
+                  description: "Address deleted successfully",
+               })
+               appStore.closeDialog()
+            } catch (error) {
+               const err = error as NuxtError
+               appStore.notify({
+                  title: err.statusMessage,
+                  description: err.message,
+                  color: "error",
+               })
+            }
+         },
+      })
+   )
+}
+
+async function setAddressAsDefault(data: DTO.Address) {
+   try {
+      await $api(`/api/addresses/${data.id}`, {
+         method: "patch",
+         body: {
+            isDefault: true,
+         },
+      })
+      await fetchAddresses()
+      appStore.notify({
+         title: "Success",
+         description: "Address set as default successfully",
+      })
+      appStore.closeDialog()
+   } catch (error) {
+      const err = error as NuxtError
+      appStore.notify({
+         title: err.statusMessage,
+         description: err.message,
+         color: "error",
+      })
+   }
 }
 </script>
 
@@ -250,7 +317,36 @@ function openAddressForm() {
                <ConsumerAddresses
                   v-if="addresses && selectedSection == 2"
                   :data="addresses"
-               />
+                  @update:default="setAddressAsDefault"
+               >
+                  <template #actions="{ item }">
+                     <UTooltip text="Update">
+                        <UButton
+                           icon="lucide:edit"
+                           size="xs"
+                           variant="ghost"
+                           color="neutral"
+                           class="ms-2"
+                           @click="openAddressForm(item)"
+                        />
+                     </UTooltip>
+                     <UTooltip text="Delete">
+                        <UButton
+                           icon="lucide:trash"
+                           size="xs"
+                           variant="ghost"
+                           color="error"
+                           class="ms-2"
+                           :disabled="item.isDefault"
+                           @click="deleteAddress(item)"
+                        />
+                     </UTooltip>
+                     <USeparator
+                        orientation="vertical"
+                        class="mx-4 h-6"
+                     />
+                  </template>
+               </ConsumerAddresses>
             </div>
          </div>
       </ClientOnly>

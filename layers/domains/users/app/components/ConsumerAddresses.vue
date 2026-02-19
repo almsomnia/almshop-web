@@ -3,6 +3,10 @@ const props = defineProps<{
    data: DTO.Address[]
 }>()
 
+const emit = defineEmits<{
+   "update:default": [data: DTO.Address]
+}>()
+
 function renderRegion(address: DTO.Address) {
    const province = address.province.name
    const regency = address.regency.name
@@ -18,36 +22,14 @@ function renderRegion(address: DTO.Address) {
          <div
             v-for="address in props.data"
             :key="address.id"
-            class="py-4 transition"
+            class="py-4 px-2 transition"
          >
             <div class="flex items-center">
                <h3 class="font-semibold">
                   {{ address.label }}
                </h3>
                <div class="ms-auto flex items-center">
-                  <UTooltip text="Update">
-                     <UButton
-                        icon="lucide:edit"
-                        size="xs"
-                        variant="ghost"
-                        color="neutral"
-                        class="ms-2"
-                     />
-                  </UTooltip>
-                  <UTooltip text="Delete">
-                     <UButton
-                        icon="lucide:trash"
-                        size="xs"
-                        variant="ghost"
-                        color="error"
-                        class="ms-2"
-                        :disabled="address.isDefault"
-                     />
-                  </UTooltip>
-                  <USeparator
-                     orientation="vertical"
-                     class="mx-4 h-6"
-                  />
+                  <slot name="actions" :item="address" />
                   <UBadge
                      v-if="address.isDefault"
                      label="Default Address"
@@ -58,6 +40,7 @@ function renderRegion(address: DTO.Address) {
                      label="Set as Default"
                      variant="outline"
                      color="neutral"
+                     @click="emit('update:default', address)"
                   />
                </div>
             </div>

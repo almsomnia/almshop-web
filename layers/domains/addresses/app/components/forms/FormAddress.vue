@@ -37,6 +37,22 @@ const loading = computed(() => unref(props.loading))
 function onSubmit(e: FormSubmitEvent<InferFlatSchema<typeof schema>>) {
    emit("submit", e.data)
 }
+
+onMounted(() => {
+   if (props.data) {
+      state.label = props.data.label
+      state.address = props.data.address
+      state.postalCode = props.data.postalCode
+      state.consumerId = props.data.consumerId
+      state.isDefault = props.data.isDefault
+      state.latitude = props.data.latitude
+      state.longitude = props.data.longitude
+      state.provinceCode = props.data.provinceCode
+      state.regencyCode = props.data.regencyCode
+      state.districtCode = props.data.districtCode
+      state.villageCode = props.data.villageCode
+   }
+})
 </script>
 
 <template>
@@ -138,28 +154,6 @@ function onSubmit(e: FormSubmitEvent<InferFlatSchema<typeof schema>>) {
             :district-code="state.districtCode"
             :loading="loading"
             :disabled="!state.districtCode"
-         />
-      </UFormField>
-      <UFormField
-         name="latitude"
-         label="Latitude"
-      >
-         <UInputNumber
-            v-model="state.latitude"
-            :increment="false"
-            :decrement="false"
-            :loading="loading"
-         />
-      </UFormField>
-      <UFormField
-         name="longitude"
-         label="Longitude"
-      >
-         <UInputNumber
-            v-model="state.longitude"
-            :increment="false"
-            :decrement="false"
-            :loading="loading"
          />
       </UFormField>
       <UCheckbox
