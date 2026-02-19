@@ -47,7 +47,7 @@ const perPage = defineModel<number>("perPage", { required: false, default: 10 })
             class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
          >
             <span class="text-muted order-2 text-xs sm:order-1">
-               {{ props.from }} &mdash; {{ props.to }} of
+               {{ props.from }} &ndash; {{ props.to }} of
                {{ props.total }} entries
             </span>
             <div
