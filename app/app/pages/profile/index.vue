@@ -11,14 +11,22 @@ const authStore = useAuthStore()
 
 const user = computed(() => authStore.user)
 
-const { data: addresses, refresh: fetchAddresses } = useApi(`/api/addresses`, {
+const {
+   data: addresses,
+   pending: addressesLoading,
+   refresh: fetchAddresses,
+} = useApi(`/api/addresses`, {
    method: "get",
    transform: (res) => res.data,
    default: () => [],
    immediate: false,
 })
 
-const { data: orders, refresh: fetchOrders } = useApi(`/api/orders`, {
+const {
+   data: orders,
+   pending: ordersLoading,
+   refresh: fetchOrders,
+} = useApi(`/api/orders`, {
    method: "get",
    transform: (res) => res.data.items,
    default: () => [],
@@ -322,75 +330,140 @@ onMounted(() => {
                   v-if="selectedSection == 2"
                   class="divide-default flex flex-col divide-y"
                >
-                  <div
-                     v-for="address in addresses"
-                     :key="address.id"
-                     class="px-2 py-4 transition"
-                  >
-                     <DetailAddress :data="address">
-                        <template #actions="{ item }">
-                           <UTooltip text="Update">
+                  <template v-if="addressesLoading">
+                     <div
+                        v-for="n in 5"
+                        class="py-4"
+                     >
+                        <div class="flex items-center">
+                           <USkeleton class="h-4 w-24" />
+                           <div class="ms-auto">
+                              <USkeleton class="h-4 w-16" />
+                           </div>
+                        </div>
+                        <div class="mt-4">
+                           <USkeleton class="h-3 w-full" />
+                           <USkeleton class="mt-2 h-3 w-1/2" />
+                           <USkeleton class="mt-2 h-3 w-1/3" />
+                        </div>
+                     </div>
+                  </template>
+                  <template v-else-if="addresses.length > 0">
+                     <div
+                        v-for="address in addresses"
+                        :key="address.id"
+                        class="px-2 py-4 transition"
+                     >
+                        <DetailAddress :data="address">
+                           <template #actions="{ item }">
+                              <UTooltip text="Update">
+                                 <UButton
+                                    icon="lucide:edit"
+                                    size="xs"
+                                    variant="ghost"
+                                    color="neutral"
+                                    class="ms-2"
+                                    @click="openAddressForm(item)"
+                                 />
+                              </UTooltip>
+                              <UTooltip text="Delete">
+                                 <UButton
+                                    icon="lucide:trash"
+                                    size="xs"
+                                    variant="ghost"
+                                    color="error"
+                                    class="ms-2"
+                                    :disabled="item.isDefault"
+                                    @click="deleteAddress(item)"
+                                 />
+                              </UTooltip>
+                              <USeparator
+                                 orientation="vertical"
+                                 class="mx-4 h-6"
+                              />
+                              <UBadge
+                                 v-if="item.isDefault"
+                                 label="Default Address"
+                                 variant="subtle"
+                              />
                               <UButton
-                                 icon="lucide:edit"
-                                 size="xs"
-                                 variant="ghost"
+                                 v-else
+                                 label="Set as Default"
+                                 variant="outline"
                                  color="neutral"
-                                 class="ms-2"
-                                 @click="openAddressForm(item)"
+                                 @click="setAddressAsDefault(item)"
                               />
-                           </UTooltip>
-                           <UTooltip text="Delete">
-                              <UButton
-                                 icon="lucide:trash"
-                                 size="xs"
-                                 variant="ghost"
-                                 color="error"
-                                 class="ms-2"
-                                 :disabled="item.isDefault"
-                                 @click="deleteAddress(item)"
-                              />
-                           </UTooltip>
-                           <USeparator
-                              orientation="vertical"
-                              class="mx-4 h-6"
-                           />
-                           <UBadge
-                              v-if="item.isDefault"
-                              label="Default Address"
-                              variant="subtle"
-                           />
-                           <UButton
-                              v-else
-                              label="Set as Default"
-                              variant="outline"
-                              color="neutral"
-                              @click="setAddressAsDefault(item)"
-                           />
-                        </template>
-                     </DetailAddress>
-                  </div>
+                           </template>
+                        </DetailAddress>
+                     </div>
+                  </template>
+                  <template v-else>
+                     <UEmpty
+                        icon="lucide:map-pin"
+                        title="No Addresses"
+                        description="You haven't added any addresses yet."
+                        variant="naked"
+                     />
+                  </template>
                </div>
                <div
                   v-if="selectedSection === 3"
                   class="divide-default flex flex-col divide-y"
                >
-                  <div
-                     v-for="order in orders"
-                     :key="order.id"
-                     class="px-2 py-4"
-                  >
-                     <ListOrderItem :data="order">
-                        <template #actions="{ item }">
-                           <UTooltip text="Detail">
-                              <UButton
-                                 color="neutral"
-                                 icon="lucide:eye"
-                                 variant="ghost"
-                              />
-                           </UTooltip>
+                  <template v-if="ordersLoading">
+                     <div
+                        v-for="n in 5"
+                        class="py-4"
+                     >
+                        <div class="flex items-center">
+                           <USkeleton class="h-4 w-32" />
+                           <USkeleton class="ms-2 h-4 w-16" />
+                           <USkeleton class="ms-auto h-3 w-24" />
+                        </div>
+                        <div class="mt-4">
+                           <USkeleton class="h-3 w-16" />
+                           <div class="flex items-center">
+                              <USkeleton class="mt-2 h-3 w-1/4" />
+                              <USkeleton class="ms-auto h-3 w-8" />
+                           </div>
+                        </div>
+                     </div>
+                  </template>
+                  <template v-else-if="orders.length > 0">
+                     <div
+                        v-for="order in orders"
+                        :key="order.id"
+                        class="px-2 py-4"
+                     >
+                        <ListOrderItem :data="order">
+                           <template #actions="{ item }">
+                              <UTooltip text="Detail">
+                                 <UButton
+                                    color="neutral"
+                                    icon="lucide:eye"
+                                    variant="ghost"
+                                 />
+                              </UTooltip>
+                           </template>
+                        </ListOrderItem>
+                     </div>
+                  </template>
+                  <template v-else>
+                     <UEmpty
+                        icon="lucide:package"
+                        title="No Orders"
+                        description="You haven't placed any orders yet."
+                        variant="naked"
+                     >
+                        <template #actions>
+                           <UButton
+                              label="Shop Now"
+                              icon="lucide:shopping-cart"
+                              to="/products"
+                           />
                         </template>
-                     </ListOrderItem>
-                  </div>
+                     </UEmpty>
+                  </template>
                </div>
             </div>
          </div>
