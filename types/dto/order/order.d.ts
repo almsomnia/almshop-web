@@ -10,6 +10,7 @@ declare namespace DTO {
       createdAt: string
       updatedAt: string
       details: DTO.Order.Detail[]
+      user: DTO.User
    }
 
    namespace Order {
