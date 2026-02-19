@@ -47,7 +47,7 @@ watch(
       cartItems.value = value.map((item) => {
          return {
             ...item,
-            selected: true,
+            selected: false,
          }
       })
    },
