@@ -317,7 +317,6 @@ async function setAddressAsDefault(data: DTO.Address) {
                <ConsumerAddresses
                   v-if="addresses && selectedSection == 2"
                   :data="addresses"
-                  @update:default="setAddressAsDefault"
                >
                   <template #actions="{ item }">
                      <UTooltip text="Update">
@@ -344,6 +343,18 @@ async function setAddressAsDefault(data: DTO.Address) {
                      <USeparator
                         orientation="vertical"
                         class="mx-4 h-6"
+                     />
+                     <UBadge
+                        v-if="item.isDefault"
+                        label="Default Address"
+                        variant="subtle"
+                     />
+                     <UButton
+                        v-else
+                        label="Set as Default"
+                        variant="outline"
+                        color="neutral"
+                        @click="setAddressAsDefault(item)"
                      />
                   </template>
                </ConsumerAddresses>

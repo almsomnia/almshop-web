@@ -13,6 +13,7 @@ type CartItem = DTO.Cart.Detail & {
 
 const cartStore = useCartStore()
 const appStore = useAppStore()
+const authStore = useAuthStore()
 const cartItems = ref<CartItem[]>([])
 
 const selectedItems = computed(() => {
@@ -123,6 +124,65 @@ async function deleteItems() {
          },
       })
    )
+}
+
+const { data: addresses } = useApi(`/api/addresses`, {
+   server: false,
+   method: "get",
+   transform: (res) => {
+      selectedAddress.value = res.data.find((address) => address.isDefault)
+      return res.data
+   },
+})
+const selectedAddress = shallowRef<DTO.Address>()
+
+async function checkout() {
+   try {
+      if (!authStore.user) {
+         navigateTo("/login")
+         return
+      }
+
+      if (!selectedAddress.value) {
+         appStore.notify({
+            title: "No address selected",
+            description: "Please select an address to checkout.",
+            color: "error",
+         })
+         return
+      }
+
+      const payload: InferSchema<typeof $orderSchema, "base"> = {
+         userId: authStore.user.id,
+         addressId: selectedAddress.value.id,
+         items: selectedItems.value.map((item) => {
+            return {
+               productId: item.productId,
+               quantity: item.quantity,
+            }
+         }),
+      }
+
+      const response = await $api(`/api/orders`, {
+         method: "post",
+         body: payload,
+      })
+
+      appStore.notify({
+         title: "Order created",
+         description: response.meta.message,
+      })
+
+      navigateTo(`/profile?tab=3`)
+      cartStore.fetchCart()
+   } catch (error) {
+      const err = error as NuxtError
+      appStore.notify({
+         title: err.statusMessage,
+         description: err.message,
+         color: "error",
+      })
+   }
 }
 </script>
 
@@ -251,7 +311,54 @@ async function deleteItems() {
                />
             </div>
             <div class="sticky top-24">
-               <UCard variant="soft">
+               <UCard class="mb-4">
+                  <template #header>
+                     <h2 class="font-semibold">Delivery Address</h2>
+                  </template>
+                  <DetailAddress
+                     v-if="selectedAddress"
+                     :data="selectedAddress"
+                  >
+                     <template #actions>
+                        <UPopover>
+                           <UButton
+                              label="Change Address"
+                              size="sm"
+                              variant="outline"
+                              icon="lucide:edit"
+                           />
+                           <template #content>
+                              <div
+                                 class="max-h-128 space-y-1 overflow-y-auto p-4"
+                              >
+                                 <DetailAddress
+                                    v-for="address in addresses"
+                                    :key="address.id"
+                                    :data="address"
+                                    class="cursor-pointer rounded-lg p-4 transition"
+                                    :class="[
+                                       selectedAddress?.id == address.id
+                                          ? 'bg-accented/75'
+                                          : 'hover:bg-muted',
+                                    ]"
+                                    @click="selectedAddress = address"
+                                 >
+                                    <template #actions>
+                                       <UIcon
+                                          name="lucide:check"
+                                          v-show="
+                                             selectedAddress?.id == address.id
+                                          "
+                                       />
+                                    </template>
+                                 </DetailAddress>
+                              </div>
+                           </template>
+                        </UPopover>
+                     </template>
+                  </DetailAddress>
+               </UCard>
+               <UCard>
                   <template #header>
                      <h2 class="font-semibold">Order Summary</h2>
                   </template>
@@ -305,6 +412,7 @@ async function deleteItems() {
                         block
                         class="mt-4"
                         :disabled="selectedItems.length === 0"
+                        @click="checkout"
                      />
                   </template>
                </UCard>

@@ -22,34 +22,16 @@ function renderRegion(address: DTO.Address) {
          <div
             v-for="address in props.data"
             :key="address.id"
-            class="py-4 px-2 transition"
+            class="px-2 py-4 transition"
          >
-            <div class="flex items-center">
-               <h3 class="font-semibold">
-                  {{ address.label }}
-               </h3>
-               <div class="ms-auto flex items-center">
-                  <slot name="actions" :item="address" />
-                  <UBadge
-                     v-if="address.isDefault"
-                     label="Default Address"
-                     variant="subtle"
+            <DetailAddress :data="address">
+               <template #actions>
+                  <slot
+                     name="actions"
+                     :item="address"
                   />
-                  <UButton
-                     v-else
-                     label="Set as Default"
-                     variant="outline"
-                     color="neutral"
-                     @click="emit('update:default', address)"
-                  />
-               </div>
-            </div>
-            <p class="text-muted mt-4 text-sm text-pretty">
-               {{ address.address }}
-            </p>
-            <p class="text-muted mt-2 text-sm text-pretty">
-               {{ renderRegion(address) }}
-            </p>
+               </template>
+            </DetailAddress>
          </div>
       </div>
    </div>

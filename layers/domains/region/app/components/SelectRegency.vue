@@ -49,8 +49,9 @@ watch(
          return
       }
       fetchItems()
-   }, {
-      immediate: true
+   },
+   {
+      immediate: true,
    }
 )
 </script>
