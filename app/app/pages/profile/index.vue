@@ -11,25 +11,19 @@ const authStore = useAuthStore()
 
 const user = computed(() => authStore.user)
 
-const addresses = ref<DTO.Address[]>([])
-async function fetchAddresses() {
-   try {
-      const response = await $api<API.Response<DTO.Address[]>>(
-         `/api/addresses`,
-         {
-            method: "get",
-         }
-      )
-      addresses.value = response.data
-   } catch (error) {
-      const err = error as NuxtError
-      appStore.notify({
-         title: err.statusMessage,
-         description: err.message,
-         color: "error",
-      })
-   }
-}
+const { data: addresses, refresh: fetchAddresses } = useApi(`/api/addresses`, {
+   method: "get",
+   transform: (res) => res.data,
+   default: () => [],
+   immediate: false,
+})
+
+const { data: orders, refresh: fetchOrders } = useApi(`/api/orders`, {
+   method: "get",
+   transform: (res) => res.data.items,
+   default: () => [],
+   immediate: false,
+})
 
 const breadcrumbItems: BreadcrumbItem[] = [
    {
@@ -90,6 +84,9 @@ watch(selectedSection, async (value) => {
    if (value == 2) {
       if (addresses.value.length > 0) return
       await fetchAddresses()
+   } else if (value == 3) {
+      if (orders.value.length > 0) return
+      await fetchOrders()
    }
 })
 
@@ -243,6 +240,13 @@ async function setAddressAsDefault(data: DTO.Address) {
       })
    }
 }
+
+const route = useRoute()
+onMounted(() => {
+   if (route.query.tab) {
+      selectedSection.value = Number(route.query.tab)
+   }
+})
 </script>
 
 <template>
@@ -314,50 +318,80 @@ async function setAddressAsDefault(data: DTO.Address) {
                      />
                   </template>
                </ConsumerProfile>
-               <ConsumerAddresses
-                  v-if="addresses && selectedSection == 2"
-                  :data="addresses"
+               <div
+                  v-if="selectedSection == 2"
+                  class="divide-default flex flex-col divide-y"
                >
-                  <template #actions="{ item }">
-                     <UTooltip text="Update">
-                        <UButton
-                           icon="lucide:edit"
-                           size="xs"
-                           variant="ghost"
-                           color="neutral"
-                           class="ms-2"
-                           @click="openAddressForm(item)"
-                        />
-                     </UTooltip>
-                     <UTooltip text="Delete">
-                        <UButton
-                           icon="lucide:trash"
-                           size="xs"
-                           variant="ghost"
-                           color="error"
-                           class="ms-2"
-                           :disabled="item.isDefault"
-                           @click="deleteAddress(item)"
-                        />
-                     </UTooltip>
-                     <USeparator
-                        orientation="vertical"
-                        class="mx-4 h-6"
-                     />
-                     <UBadge
-                        v-if="item.isDefault"
-                        label="Default Address"
-                        variant="subtle"
-                     />
-                     <UButton
-                        v-else
-                        label="Set as Default"
-                        variant="outline"
-                        color="neutral"
-                        @click="setAddressAsDefault(item)"
-                     />
-                  </template>
-               </ConsumerAddresses>
+                  <div
+                     v-for="address in addresses"
+                     :key="address.id"
+                     class="px-2 py-4 transition"
+                  >
+                     <DetailAddress :data="address">
+                        <template #actions="{ item }">
+                           <UTooltip text="Update">
+                              <UButton
+                                 icon="lucide:edit"
+                                 size="xs"
+                                 variant="ghost"
+                                 color="neutral"
+                                 class="ms-2"
+                                 @click="openAddressForm(item)"
+                              />
+                           </UTooltip>
+                           <UTooltip text="Delete">
+                              <UButton
+                                 icon="lucide:trash"
+                                 size="xs"
+                                 variant="ghost"
+                                 color="error"
+                                 class="ms-2"
+                                 :disabled="item.isDefault"
+                                 @click="deleteAddress(item)"
+                              />
+                           </UTooltip>
+                           <USeparator
+                              orientation="vertical"
+                              class="mx-4 h-6"
+                           />
+                           <UBadge
+                              v-if="item.isDefault"
+                              label="Default Address"
+                              variant="subtle"
+                           />
+                           <UButton
+                              v-else
+                              label="Set as Default"
+                              variant="outline"
+                              color="neutral"
+                              @click="setAddressAsDefault(item)"
+                           />
+                        </template>
+                     </DetailAddress>
+                  </div>
+               </div>
+               <div
+                  v-if="selectedSection === 3"
+                  class="divide-default flex flex-col divide-y"
+               >
+                  <div
+                     v-for="order in orders"
+                     :key="order.id"
+                     class="px-2 py-4"
+                  >
+                     <ListOrderItem :data="order">
+                        <template #actions="{ item }">
+                           <UTooltip text="Detail">
+                              <UButton
+                                 color="neutral"
+                                 icon="lucide:eye"
+                                 variant="ghost"
+                              />
+                           </UTooltip>
+                        </template>
+                     </ListOrderItem>
+                  </div>
+               </div>
             </div>
          </div>
       </ClientOnly>
