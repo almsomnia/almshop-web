@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
    data: DTO.Address
+   hideLabel?: boolean
 }>()
 
 const region = computed(() => {
@@ -15,7 +16,10 @@ const region = computed(() => {
 <template>
    <div>
       <div class="flex items-center">
-         <p class="font-semibold">
+         <p
+            v-if="!props.hideLabel"
+            class="font-semibold"
+         >
             {{ props.data.label }}
          </p>
          <div
@@ -28,11 +32,17 @@ const region = computed(() => {
             />
          </div>
       </div>
-      <p class="text-muted mt-2 line-clamp-2 text-sm text-pretty">
+      <p
+         class="text-muted line-clamp-2 text-sm text-pretty"
+         :class="{ 'mt-2': !props.hideLabel }"
+      >
          {{ props.data.address }}
       </p>
       <p class="text-muted text-sm text-pretty">
          {{ region }}
+      </p>
+      <p class="text-muted text-sm text-pretty">
+         {{ props.data.postalCode }}
       </p>
    </div>
 </template>

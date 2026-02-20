@@ -9,8 +9,9 @@ declare namespace DTO {
       status: OrderStatus
       createdAt: string
       updatedAt: string
-      details: DTO.Order.Detail[]
+      orderDetails: DTO.Order.Detail[]
       user: DTO.User
+      address: DTO.Address
    }
 
    namespace Order {
