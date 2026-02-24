@@ -1,15 +1,106 @@
 <script setup lang="ts">
+import type { NuxtError } from "#app"
+
 definePageMeta({
    pageName: "Order Detail",
    hideOnSidebar: true,
 })
 
 const route = useRoute()
+const appStore = useAppStore()
 
 const { data, pending, refresh } = useApi(`/api/orders/${route.params.id}`, {
    method: "get",
    transform: (res) => res.data,
 })
+
+const formShipmentLoading = shallowRef(false)
+function openShippingForm() {
+   if (!data.value) {
+      appStore.notify({
+         title: "Error",
+         description: "Data doesn't exist",
+         color: "error",
+      })
+      return
+   }
+
+   appStore.showDialog(
+      "Update Shipping Info",
+      h(resolveComponent("FormShipment"), {
+         loading: formShipmentLoading,
+         data: data.value.shipment,
+         orderId: Number(route.params.id),
+         addressId: data.value.addressId,
+         onSubmit: async (
+            values: InferSchema<typeof $shipmentSchema, "base">
+         ) => {
+            try {
+               formShipmentLoading.value = true
+
+               const method = data.value?.shipment ? "patch" : "post"
+               const response = await $api<API.Response<DTO.Shipment>>(
+                  `/api/orders/${route.params.id}/shipments`,
+                  {
+                     method,
+                     body: values,
+                  }
+               )
+
+               appStore.notify({
+                  title: "Success",
+                  description: response.meta.message,
+               })
+               refresh()
+               appStore.closeDialog()
+            } catch (error) {
+               const err = error as NuxtError
+               appStore.notify({
+                  title: err.statusMessage,
+                  description: err.message,
+                  color: "error",
+               })
+            } finally {
+               formShipmentLoading.value = false
+            }
+         },
+      })
+   )
+}
+
+const canShipOrder = computed(() => {
+   return data.value?.status === "PENDING"
+})
+
+function statusIs(target: OrderStatus) {
+   return data.value?.status === target && data.value.shipment
+}
+
+async function updateStatus(status: OrderStatus) {
+   try {
+      const response = await $api<API.Response<DTO.Order>>(
+         `/api/orders/${route.params.id}/status`,
+         {
+            method: "patch",
+            body: {
+               status,
+            },
+         }
+      )
+      appStore.notify({
+         title: "Success",
+         description: response.meta.message,
+      })
+      await refresh()
+   } catch (error) {
+      const err = error as NuxtError
+      appStore.notify({
+         title: err.statusMessage,
+         description: err.message,
+         color: "error",
+      })
+   }
+}
 </script>
 
 <template>
@@ -106,12 +197,38 @@ const { data, pending, refresh } = useApi(`/api/orders/${route.params.id}`, {
                class=""
                v-if="data"
             >
-               <h3 class="mb-4 text-sm font-semibold">Shipping Information</h3>
+               <div class="flex items-center">
+                  <h3 class="mb-4 text-sm font-semibold">
+                     Shipping Information
+                  </h3>
+                  <UTooltip
+                     text="Update shipment information"
+                     arrow
+                  >
+                     <UButton
+                        class="ms-auto"
+                        icon="lucide:edit"
+                        size="xs"
+                        variant="link"
+                        @click="openShippingForm"
+                        :disabled="!statusIs('PENDING')"
+                     />
+                  </UTooltip>
+               </div>
                <div class="space-y-2 text-sm">
                   <div class="flex items-baseline">
                      <p class="basis-40">Courier Provider</p>
                      <div class="flex flex-1 gap-2 before:content-[':']">
-                        <p class="text-dimmed italic">
+                        <p
+                           v-if="data.shipment"
+                           class="text-muted text-pretty"
+                        >
+                           {{ data.shipment.courierProvider }}
+                        </p>
+                        <p
+                           v-else
+                           class="text-dimmed italic"
+                        >
                            No information provided
                         </p>
                      </div>
@@ -119,7 +236,16 @@ const { data, pending, refresh } = useApi(`/api/orders/${route.params.id}`, {
                   <div class="flex items-baseline">
                      <p class="basis-40">Tracking Number</p>
                      <div class="flex flex-1 gap-2 before:content-[':']">
-                        <p class="text-dimmed italic">
+                        <p
+                           v-if="data.shipment"
+                           class="text-muted text-pretty"
+                        >
+                           {{ data.shipment.trackingNumber }}
+                        </p>
+                        <p
+                           v-else
+                           class="text-dimmed italic"
+                        >
                            No information provided
                         </p>
                      </div>
@@ -171,6 +297,15 @@ const { data, pending, refresh } = useApi(`/api/orders/${route.params.id}`, {
                </div>
             </div>
          </UCard>
+         <div class="mt-4 flex items-center justify-end">
+            <UButton
+               v-if="statusIs('PENDING')"
+               label="Ship Order"
+               icon="lucide:truck"
+               :disabled="!canShipOrder"
+               @click="updateStatus('SHIPPED')"
+            />
+         </div>
       </div>
    </div>
 </template>

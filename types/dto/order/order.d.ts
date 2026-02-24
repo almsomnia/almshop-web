@@ -12,6 +12,7 @@ declare namespace DTO {
       orderDetails: DTO.Order.Detail[]
       user: DTO.User
       address: DTO.Address
+      shipment: DTO.Shipment | null
    }
 
    namespace Order {

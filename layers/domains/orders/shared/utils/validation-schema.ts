@@ -7,11 +7,24 @@ export function $orderSchema() {
    const base = z.object({
       userId: z.number(),
       addressId: z.number(),
-      items: z.array(item)
+      items: z.array(item),
    })
 
    return {
       base,
-      item
+      item,
+   }
+}
+
+export function $shipmentSchema() {
+   const base = z.object({
+      addressId: z.number().int().positive(),
+      orderId: z.number().int().positive(),
+      courierProvider: z.string().min(1).max(255),
+      trackingNumber: z.string().max(255).nullish(),
+   })
+
+   return {
+      base,
    }
 }
